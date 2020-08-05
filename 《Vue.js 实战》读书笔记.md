@@ -2,6 +2,8 @@
 
 ***
 
+# ch2 数据绑定
+
 ## 2.1 Vue实例与数据绑定
 
 ```html
@@ -50,4 +52,116 @@ vue常用的生命周期钩子有
 
 Vue实例—— 实时显示当前的时间
 
-​                                                                                                                                    
+# ch3 计算属性
+
+1. 实现简单文本插值。                                                                                                                               
+2. 动态设置元素的样式名称class和内联样式style
+
+>  计算属性是基于它的以来缓存的，一个计算属性所依赖的数据发生变化时，它才会重新取值，所以当遍历大数组和做大量计算时，应当使用计算属性
+
+# ch4 v-bind 及class与style绑定
+
+## 4.2 绑定class的几种方式
+
+### 4.2.1 对象语法
+
+```html
+<div id="app">
+    <div :class="classes">
+      绑定class的几种方式
+    </div>
+  </div>
+  <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+  <script> 
+    var app = new Vue({
+      el:'#app',
+      data:{
+        isActive:true,
+        error:null
+      },
+      computed:{
+        classes:function(){
+          return {
+            active:this.isActive && !this.error,
+            'text-fail':this.error && this.error.type === 'fail'
+          }
+        }
+      }
+    })
+  </script>
+```
+
+### 4.2.2 数组语法
+
+给class绑定一个数组
+
+```html
+<div id="app">
+    <div :class="[activeCls,errorCls]">
+      需要多个class
+    </div>
+  </div>
+  <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+  <script> 
+    var app = new Vue({
+      el:'#app',
+      data:{
+        activeCls:'active',
+        errorCls:'error',
+      }
+    })
+```
+
+可以使用计算属性给元素动态设置类名
+
+```html
+ <div id="app">
+    <div :class="classes">
+      动态设置类名
+    </div>
+  </div>
+  <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+  <script> 
+    var app = new Vue({
+      el:'#app',
+      data:{
+        size:'large',
+        disabled:true,
+      },
+      computed:{
+        classes:function(){
+          return [
+            'btn',
+            {
+              ['btn-'+this.size]:this.size!== '',
+              ['btn-disabled']:this.disabled
+            }
+          ]
+        }
+      }
+    })
+  </script>
+```
+
+## 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
