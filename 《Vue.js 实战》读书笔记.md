@@ -230,7 +230,7 @@ Vue支持一下修饰符
 
 ***
 
-## ## 6.3 修饰符
+##  6.3 修饰符
 
 .number 将输入转换为Number类型，否则虽然你输入的是数字，但它的类型其实是string，用于数字输入框
 
@@ -443,3 +443,528 @@ Vue.component('my-component',{
 ```
 
 当prop验证失败时，开发版本下会在控制台抛出一条警告
+
+## 7.3 组件通信
+
+### 7.3.1 自定义事件
+
+子组件`$emit()`触发事件，父组件`$on()`监听子组件
+
+父组件也可以直接在子组件的自定义标签上使用`v-on`来监听子组件出发的自定义事件
+
+```html
+  <div id="app">
+    <p>总数:{{total}}</p>
+    <!--语法糖写法：v-on:increase-->
+    <my-component
+      @increase="handleGetTotal"
+      @reduce="handleGetTotal"></my-component>
+  </div>
+  <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+  <script>
+    Vue.component('my-component',{
+      template:'\
+      <div>\
+        <button @click="handleIncrease">+1</button>\
+        <button @click="handleReduce">-1</button>\
+      </div>',
+      data:function(){
+        return {
+          counter:0
+        }
+      },
+      methods:{
+        handleIncrease:function(){
+          this.counter++;
+          this.$emit('increase',this.counter);
+        },
+        handleReduce:function(){
+          this.counter--;
+          this.$emit('reduce',this.counter);
+        }
+      }
+    })
+
+    var app = new Vue({
+      el:'#app',
+      data:{
+        total:0,
+      },
+      methods:{
+        handleGetTotal:function(total){
+          this.total = total;
+        }
+      }
+    });
+    
+  </script>
+</body>
+</html>
+```
+
+![image-20200818113302429](《Vue.js 实战》读书笔记.assets/image-20200818113302429.png)
+
+### 7.3.2 使用v-model
+
+一个语法糖，直接使用V-model绑定数据total，这里组件$emit()的事件名时特殊的input。
+
+```html
+<div id="app">
+    <p>总数:{{total}}</p>
+    <!--语法糖写法：v-on:increase-->
+    <my-component v-model="total"></my-component>
+  </div>
+  <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+  <script>
+    Vue.component('my-component',{
+      template:'\
+      <div>\
+        <button @click="handleReduce">-1</button>\
+      </div>',
+      data:function(){
+        return {
+          counter:0
+        }
+      },
+      methods:{
+        handleReduce:function(){
+          this.counter--;
+          this.$emit('input',this.counter);
+        }
+      }
+    })
+
+    var app = new Vue({
+      el:'#app',
+      data:{
+        total:0,
+      },
+    });
+    
+  </script>
+</body>
+</html>
+```
+
+v-model还可以用来创建自定义的表单输入组件，进行数据双向绑定
+
+```html
+  <div id="app">
+    <p>总数:{{total}}</p>
+    <my-component  v-model="total"></my-component>
+    <button @click="handleReduce">-1</button>
+  </div>
+  <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+  <script>
+    Vue.component('my-component',{
+      template:'<input :value="value" @input="updateValue">',
+      methods:{
+        updateValue:function(event){
+          this.$emit('input',event.target.value);
+        }
+      }
+    })
+
+    var app = new Vue({
+      el:'#app',
+      data:{
+        total:0,
+      },
+      methods:{
+        handleReduce:function(){
+          this.total--;
+        }
+      }
+    });
+    
+  </script>
+```
+
+
+
+![image-20200818115329186](《Vue.js 实战》读书笔记.assets/image-20200818115329186.png)
+
+实现这样一个具有双向绑定的v-model组件要满足下面两个要求
+
+* 接受一个value属性
+* 在有新的value时触发input事件
+
+### 7.3.3 非父子组件通信
+
+非父子组件一般有两种，兄弟组件和跨多级组件。
+
+在Vue2.x中**，推荐使用一个空的Vue实例作为中央事件总线，也就是一个中介。**这种方法巧妙而轻量地实现了任何组件间的通信，包括父子，兄弟，跨级。
+
+```html
+ <div id="app">
+    {{message}}
+    <component-a></component-a>
+  </div>
+  <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+  <script>
+    var bus = new Vue();
+
+    Vue.component('component-a',{
+      template:'<button @click="handleEvent">传递事件</button>',
+      methods:{
+        handleEvent:function(){
+          bus.$emit('on-message','来自组件component-a的内容');
+        }
+      }
+    })
+
+    var app = new Vue({
+      el:'#app',
+      data:{
+        message:'',
+      },
+      mounted:function(){
+        var _this = this;
+        //在实例初始化时，监听来自bus实例的事件
+        bus.$on('on-message',function(msg){
+          _this.message = msg;
+        })
+      }
+    });  
+  </script>
+```
+
+<img src="《Vue.js 实战》读书笔记.assets/image-20200818194523598.png" alt="image-20200818194523598" style="zoom: 80%;" />
+
+点击后
+
+<img src="《Vue.js 实战》读书笔记.assets/image-20200818194537939.png" alt="image-20200818194537939" style="zoom:67%;" />
+
+## 7.4 使用slot分发内容
+
+#### 7.4.1 slot
+
+props传递数据，events触发事件和slot内容分发就构成了Vue组件的3个API来源，再复杂的组件也是由这三部分组成的。
+
+### 7.4.2 作用域
+
+父组件模板的内容是在父组件作用域内编译，子组件模板的内容实在子组件作用域内编译
+
+showChild绑定父组件的数据
+
+```html
+  <div id="app">
+    <child-component v-show="showChild"></child-component>
+  </div>
+  <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+  <script>
+    var bus = new Vue();
+
+    Vue.component('child-component',{
+      template:'<div>子组件</div>',
+    });
+
+    var app = new Vue({
+      el:'#app',
+      data:{
+        showChild:true
+      }
+    });
+    
+  </script>
+```
+
+showChild绑定子组件
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>示例</title>
+</head>
+<body>
+  <div id="app">
+    <child-component></child-component>
+  </div>
+  <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+  <script>
+    var bus = new Vue();
+
+    Vue.component('child-component',{
+      template:'<div v-show="showChild">子组件</div>',
+      data:function(){
+        return {
+          showChild:true
+        }
+      }
+    });
+
+    var app = new Vue({
+      el:'#app',
+    });
+    
+  </script>
+</body>
+</html>
+```
+
+![image-20200818200316770](《Vue.js 实战》读书笔记.assets/image-20200818200316770.png)
+
+slot分发的内容，作用域实在父组件上的
+
+### 7.4.3 slot用法
+
+**单个slot**
+
+```html
+  <div id="app">
+    <child-component>
+      <p>分发内容</p>
+      <p>分发更多的内容</p>
+    </child-component>
+  </div>
+  <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+  <script>
+    var bus = new Vue();
+
+    Vue.component('child-component',{
+      template:'\
+      <div>\
+        <slot>\
+            <p>如果父件没有插入内容，我将默认出现</p>\
+        </slot>\
+      </div>',
+    });
+
+    var app = new Vue({
+      el:'#app',
+    });
+    
+  </script>
+```
+
+**具名slot**
+
+给`<slot>`指定name后可以分发多个内容，具名slot可以和单个slot共存
+
+```html
+  <div id="app">
+    <child-component>
+      <h2 slot="header">标题</h2>
+      <p>内容</p>
+      <p>更多正文内容</p>
+      <div slot="footer">底部信息</div>
+      <p>试试</p>
+    </child-component>
+  </div>
+  <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+  <script>
+    Vue.component('child-component',{
+      template:'\
+      <div class="container">\
+        <div class="header">\
+          <slot name="header"></slot>\
+        </div>\
+        <div class="main">\
+          <slot></slot>\
+        </div>\
+        <div class="footer">\
+          <slot name="footer"></slot>\
+        </div>\
+      </div>'
+    });
+
+    var app = new Vue({
+      el:'#app',
+    });   
+  </script>
+```
+
+### 7.4.4 作用域插槽
+
+作用域插槽是一种特殊的slot，使用一个可以复用的模板替换已渲染元素
+
+```html
+ <div id="app">
+    <child-component>
+      <template scope="props">
+        <p>来自父组件的内容</p>
+        <p>{{props.msg}}</p>
+      </template>
+    </child-component>
+  </div>
+  <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+  <script>
+    var bus = new Vue();
+
+    Vue.component('child-component',{
+      template:'\
+      <div class="container">\
+        <slot msg="来自子组件的内容"></slot>\
+      </div>'
+    });
+
+    var app = new Vue({
+      el:'#app',
+    });
+    
+  </script>
+```
+
+<img src="《Vue.js 实战》读书笔记.assets/image-20200818201628736.png" alt="image-20200818201628736" style="zoom:50%;" />
+
+` <template scope="props">`，template内可以通过临时变量props访问来自子组件插槽的数据msg
+
+### 7.4.5 访问slot
+
+`$slots`用来访问被slot分发的内容的方法。
+
+```html
+  <div id="app">
+    <child-component>
+      <h2 slot="header">标题</h2>
+      <p>内容</p>
+      <p>更多正文内容</p>
+      <div slot="footer">底部信息</div>
+    </child-component>
+  </div>
+  <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+  <script>
+    Vue.component('child-component',{
+      template:'\
+      <div class="container">\
+        <div class="header">\
+          <slot name="header"></slot>\
+        </div>\
+        <div class="main">\
+          <slot></slot>\
+        </div>\
+        <div class="footer">\
+          <slot name="footer"></slot>\
+        </div>\
+      </div>',
+      mounted:function(){
+        var header = this.$slots.header;
+        var main = this.$slots.default;
+        var footer = this.$slots.footer;
+        console.log(footer);
+        console.log(footer[0].elm.innerHTML);
+      }
+    });
+
+    var app = new Vue({
+      el:'#app',
+    });   
+  </script>
+```
+
+![image-20200818203921784](《Vue.js 实战》读书笔记.assets/image-20200818203921784.png)
+
+## 7.5 组件高级用法
+
+### 7.5.1 递归组件
+
+组件在它的模板内可以递归的调用自己，只要给组件设置name就可以了。
+
+组件递归使用可以用来开发一些具有未知层级关系的独立组件，比如级联选择器和属性控件等
+
+### 7.5.2  内联模板
+
+给组件标签使用`inline-template`特性，组件就会把它的内容当作模板，而不是当作内容分发。不建议使用
+
+### 7.5.3 动态组件
+
+元素`<component>`来动态挂载不同的组件，使用is来选择要挂载的组件。
+
+```html
+  <div id="app">
+    <component :is="currentView"></component>
+    <button @click="handleChangeView('A')">切换到组件A</button>
+    <button @click="handleChangeView('B')">切换到组件B</button>
+    <button @click="handleChangeView('C')">切换到组件C</button>
+  </div>
+  <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+  <script>
+    var app = new Vue({
+      el:'#app',
+      components:{
+        comA:{
+          template:'<div>组件A</div>'
+        },
+        comB:{
+          template:'<div>组件B</div>'
+        },
+        comC:{
+          template:'<div>组件C</div>'
+        },
+      },
+      data:{
+        currentView:'comA',
+      },
+      methods:{
+        handleChangeView:function(component){
+          this.currentView = 'com'+component;
+        }
+      }
+    });
+  </script>
+```
+
+![image-20200818204923401](《Vue.js 实战》读书笔记.assets/image-20200818204923401.png)
+
+### 7.4.5 异步组件
+
+Vue.js允许将组件定义为一个工厂函数，动态地解析组件。Vue.js只在组件需要渲染时触发工厂函数，并把结果缓存起来，用于后面的再次渲染
+
+```html
+  <div id="app">
+    <child-component></child-component>
+  </div>
+  <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+  <script>
+    Vue.component('child-component',function(resolve,reject){
+      window.setTimeout(function(){
+        resolve({
+          template:'<div>我是异步渲染的</div>'
+        })
+      })
+    });
+
+    var app = new Vue({
+      el:'#app',
+    });
+  </script>
+```
+
+后面使用webpack更优雅地实现异步组件
+
+## 7.6 其他
+
+### 7.6.1 $nextTick
+
+**一个重要概念：异步更新队列**：Vue在观察到数据变化时并不直接更新DOM，而是开启一个队列，并缓冲在同一事件循环中发生的所有数据改变，在缓冲时会去除重复数据，从而避免比不要的计算和DOM操作。然后，在下一个事件循环tick中，Vue刷新队列并执行实际（已去重的）工作。 
+
+```html
+  <div id="app">
+    <div id="div" v-if="showDiv">这是一段文本</div>
+    <button @click="getText">获取div内容</button>
+  </div>
+  <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+  <script>
+    var app = new Vue({
+      el:'#app',
+      data:{
+        showDiv:false
+      },
+      methods:{
+        getText:function(){
+          this.showDiv = true;
+          this.$nextTick(function(){
+            var text = document.getElementById('div').innerHTML;
+          console.log(text);
+          });
+        }
+      }
+    })
+  </script>
+```
+
+### ## 7.7 实例
+
