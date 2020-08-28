@@ -966,5 +966,182 @@ Vue.js允许将组件定义为一个工厂函数，动态地解析组件。Vue.j
   </script>
 ```
 
-### ## 7.7 实例
+### 7.7 实例
+
+# ch8 自定义指令
+
+***
+
+## 8.1 基本用法
+
+自定义指令的注册方式分为全局注册和局部注册
+
+自定义指令的选项由几个钩子函数组成，每个都是可选的
+
+* bind
+* inserted
+* update
+* componentUpdated
+* unbind
+
+ 打开页面，input输入框就自动获得了焦点，成为可输入状态
+
+```html
+  <div id="app">
+    <input type="text" v-focus>
+  </div>
+  <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+  <script>
+    //这种是全局注册方式
+    Vue.directive('focus',{
+      inserted:function(el){
+        el.focus();
+      }
+    })
+
+    var app = new Vue({
+      el:'#app',
+    });
+  </script>
+```
+
+![image-20200826210806631](《Vue.js 实战》读书笔记.assets/image-20200826210806631.png)
+
+使用的不多，业务上更需要的不是自定义指令，而是组件。
+
+## 8.2 实战
+
+查看前端demo里面
+
+# ch9 Render函数
+
+***
+
+Vue.js 2.x使用了Virtual Dom（虚拟DOM）来更新DOM节点，提升渲染性能
+
+## 9.1 Virtual Dom
+
+> React和Vue2都使用了Virtual Dom技术，并不是真正意义上的DOM，而是一个轻量级的Javascript对象。在状态发生变化时，virtual Dom会进行Diff运算，来更新只需要被替换的DOM，而不是全部重绘。
+
+Virtual Dom运行过程
+
+![image-20200827212547179](《Vue.js 实战》读书笔记.assets/image-20200827212547179.png)
+
+用virtualDom创建的JavaScript对象一般是这样的：
+
+```js
+    var vNode = {
+      tag:'div',
+      attributes:{
+        id:'main'
+      },
+      children:[
+        //p节点
+      ]
+    
+```
+
+在Vue2中，virtual Dom是通过一种VNode类表达的，每个DOM元素或组件都对应一个VNode对象。
+
+VNode可以分为如下几类：
+
+![image-20200828091327405](《Vue.js 实战》读书笔记.assets/image-20200828091327405.png)
+
+## 9.2 Render函数
+
+很多网站将标题做成了锚点，点击会将内容加在网址后面，以#分割
+
+Render函数通过createElement参数来创建Virtual Dom，结构比使用template精简了许多。
+
+```html
+<div id="app">
+    <anchor :level="2" title="character">特性</anchor>
+  </div> 
+  <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+  <script>
+    Vue.component('anchor',{
+      props:{
+        level:{
+          type:Number,
+          required:true
+        },
+        title:{
+          type:String,
+          default:'',
+        }
+      },
+      render:function(createElement){
+        return createElement(
+          'h'+this.level,
+          [
+            createElement(
+              'a',
+              {
+                domProps:{
+                  href:'#' + this.title
+                }
+              },
+              this.$slots.default//= undefined 说明父组件中没有定义slot
+            )
+          ]
+        )
+      }
+    });
+
+    var app = new Vue({
+      el:'#app',
+    });
+  </script>
+```
+
+![image-20200828093719973](《Vue.js 实战》读书笔记.assets/image-20200828093719973.png)
+
+## 9.3 createElement用法
+
+## 9.4 函数化组件
+
+Vue.js提供一个functional的布尔选项，设置为true可以使组件无状态或无实例，也就是没有data和this上下文，这样用render函数返回虚拟节点可以更容易渲染，因为函数化组件只是一个函数。渲染开销要小很多。
+
+使用函数化组件时，Render函数提供了第二个参数`context`来提供临时上下文。组件需要的`dara,props,slots,children,parent`都是通过这个上下文来传递的，比如`this.level`要改写为`context.props.level`，`this.$slots.default改写问context.children`
+
+**示例：使用函数化组件展示了一个根据数据智能选择不同组件的场景**
+
+看代码![image-20200828104422520](《Vue.js 实战》读书笔记.assets/image-20200828104422520.png)
+
+![image-20200828104517527](《Vue.js 实战》读书笔记.assets/image-20200828104517527.png)
+
+![image-20200828104523153](《Vue.js 实战》读书笔记.assets/image-20200828104523153.png)
+
+![image-20200828104528584](《Vue.js 实战》读书笔记.assets/image-20200828104528584.png)
+
+> 函数化组件在业务中并不是很常用，上述示例也可以用组件的is特性来动态加载。
+>
+> 总之，函数化组件主要适用于以下两个场景
+>
+> * 程序化地在多个组件中选择一个
+> * 在将children,props,data传递给子组件之前操作它们。
+
+## 9.5 JSX
+
+> 为了让Render函数更好的书写和阅读，Vue.js提供了插件babel-plugin-transform-vue-jsx来支持JSX语法
+
+## 9.6 实战：使用Render函数开发可排序的表格组件
+
+见前端demo
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
