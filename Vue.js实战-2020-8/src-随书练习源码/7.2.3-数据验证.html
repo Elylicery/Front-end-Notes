@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>示例</title>
+</head>
+<body>
+  <div id="app">
+  </div>
+  <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+  <script>
+    Vue.component('my-component',{
+      props:{
+        //必须是数字类型
+        propA:Number,
+        //必须是字符串或数字类型
+        propB:[String,Number],
+        //布尔值,如果没有定义,默认值就是true
+        propC:{
+          type:Boolean,
+          default:true
+        },
+        //数字，而且是必传
+        propD:{
+          type:Number,
+          required:true
+        },
+        //如果是数组或对象，默认值必须是一个函数来返回
+        propE:{
+          type:Array,
+          default:function(){
+            return [];
+          }
+        },
+        //自定义一个验证函数
+        propF:{
+          validator:function(value){
+            return val>10;
+          }
+        }
+      }
+    });
+    var app = new Vue({
+      el:'#app',
+    });
+  </script>
+</body>
+</html>

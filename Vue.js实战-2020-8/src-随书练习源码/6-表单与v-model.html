@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>示例</title>
+</head>
+<body>
+  <div id="app">
+    <h2>输入框</h2>
+    <input type="text" v-model="message" placeholder="请输入...">
+    <p>输入的内容是：{{message}}</p>
+
+    <h2>单选按钮</h2>
+    <input type="radio" v-model="picked" value="html" id="html">
+    <label for="html">HTML</label>
+    <input type="radio" v-model="picked" value="javascript" id="js">
+    <label for="js">javascript</label>
+    <input type="radio" v-model="picked" value="css" id="css">
+    <label for="html">CSS</label>
+    <p>选择的项是:{{picked}}</p>
+
+    <h2>复选框</h2>
+     <input type="checkbox" v-model="checked" value="html" id="html">
+    <label for="html">HTML</label>
+    <input type="checkbox" v-model="checked" value="javascript" id="js">
+    <label for="js">javascript</label>
+    <input type="checkbox" v-model="checked" value="css" id="css">
+    <label for="html">CSS</label>
+    <p>选择的项是:{{checked}}</p>
+
+    <h2>选择列表</h2>
+    
+  </div>
+  <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+  <script>
+    var app = new Vue({
+      el:'#app',
+      data:{ 
+        message:'',
+        picked:true,
+        checked:[],
+      },
+    });
+    
+  </script>
+</body>
+</html>

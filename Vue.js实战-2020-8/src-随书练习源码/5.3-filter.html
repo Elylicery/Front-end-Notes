@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>示例</title>
+</head>
+<body>
+  <div id="app">
+    <ul>
+      <template v-for="book in sortedBooks">
+        <li>书名:{{book.name}} 作者：{{book.author}}</li>
+      </template>
+    </ul>
+  </div>
+  <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+  <script>
+    var app = new Vue({
+      el:'#app',
+      data:{
+        books:[
+          {
+            name:'<<Vue.js>>',
+            author:"Lihua",
+          },
+          {
+            name:'<<CSS>>',
+            author:"Xiaomig",
+          },
+          {
+            name:'<<Javascript>>',
+            author:"HanLei",
+          }
+        ]
+      },
+      computed:{
+        sortedBooks:function(){
+          return this.books.sort(function(a,b){
+            return a.name.length < b.name.length;
+          });
+        }
+      }
+    });
+    
+  </script>
+</body>
+</html>

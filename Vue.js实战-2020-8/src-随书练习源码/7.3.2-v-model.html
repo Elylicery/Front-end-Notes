@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>示例</title>
+</head>
+<body>
+  <div id="app">
+    <p>总数:{{total}}</p>
+    <my-component  v-model="total"></my-component>
+    <button @click="handleReduce">-1</button>
+  </div>
+  <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+  <script>
+    Vue.component('my-component',{
+      template:'<input :value="value" @input="updateValue">',
+      methods:{
+        updateValue:function(event){
+          this.$emit('input',event.target.value);
+        }
+      }
+    })
+
+    var app = new Vue({
+      el:'#app',
+      data:{
+        total:0,
+      },
+      methods:{
+        handleReduce:function(){
+          this.total--;
+        }
+      }
+    });
+    
+  </script>
+</body>
+</html>

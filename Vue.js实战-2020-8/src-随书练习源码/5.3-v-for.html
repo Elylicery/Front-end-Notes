@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>示例</title>
+</head>
+<body>
+  <div id="app">
+    <ul>
+      <template v-for="(book in books">
+        <li>书名:{{book.name}}作者：{{book.author}}</li>
+      </template>
+    </ul>
+  </div>
+  <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+  <script>
+    var app = new Vue({
+      el:'#app',
+      data:{
+        books:[
+          {
+            name:'<<VUe.js>>',
+            author:"Lihua",
+          },
+          {
+            name:'<<CSS>>',
+            author:"Xiaomig",
+          },
+          {
+            name:'<<Javascript>>',
+            author:"HanLei",
+          }
+        ]
+      },
+    });
+
+    //方法1 使用push
+    // app.books.push({
+    //   name:'<<h5>>',
+    //   author:'Lea'
+    // })
+
+    //方法2 使用Vue内置的set方法
+    Vue.set(app.books,3,{
+      name:'<<h5>>',
+      author:'Lea'
+    }); 
+    //注意：未导入Vue的情况下使用$set
+    // app.$set(app.books,3,{
+    //   name:'<<h5>>',
+    //   author:'Lea'
+    // })
+
+    //方法3 使用splice
+    app.books.splice(3,1,{
+      name:'<<h5>>',
+      author:'Lea'
+    })
+
+    // app.books = app.books.filter(function(item){
+    //   return item.name.match(/Java/);
+    // });
+    
+  </script>
+</body>
+</html>

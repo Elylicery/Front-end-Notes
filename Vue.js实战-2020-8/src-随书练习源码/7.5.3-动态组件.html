@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>示例</title>
+</head>
+<body>
+  <div id="app">
+    <component :is="currentView"></component>
+    <button @click="handleChangeView('A')">切换到组件A</button>
+    <button @click="handleChangeView('B')">切换到组件B</button>
+    <button @click="handleChangeView('C')">切换到组件C</button>
+  </div>
+  <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+  <script>
+    var app = new Vue({
+      el:'#app',
+      components:{
+        comA:{
+          template:'<div>组件A</div>'
+        },
+        comB:{
+          template:'<div>组件B</div>'
+        },
+        comC:{
+          template:'<div>组件C</div>'
+        },
+      },
+      data:{
+        currentView:'comA',
+      },
+      methods:{
+        handleChangeView:function(component){
+          this.currentView = 'com'+component;
+        }
+      }
+    });
+  </script>
+</body>
+</html>

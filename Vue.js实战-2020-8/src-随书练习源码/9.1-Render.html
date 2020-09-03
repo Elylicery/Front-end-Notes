@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>示例</title>
+</head>
+<body>
+  <div id="app">
+    <anchor :level="2" title="character">特性</anchor>
+  </div> 
+  <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+  <script>
+    Vue.component('anchor',{
+      props:{
+        level:{
+          type:Number,
+          required:true
+        },
+        title:{
+          type:String,
+          default:'',
+        }
+      },
+      render:function(createElement){
+        return createElement(
+          'h'+this.level,
+          [
+            createElement(
+              'a',
+              {
+                domProps:{
+                  href:'#' + this.title
+                }
+              },
+              this.$slots.default//= undefined 说明父组件中没有定义slot
+            )
+          ]
+        )
+      }
+    });
+
+    var app = new Vue({
+      el:'#app',
+    });
+  </script>
+</body>
+</html>

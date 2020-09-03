@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>示例</title>
+</head>
+<body>
+  <div id="app">
+    <h1>当前的时间是(实时更新):<br>{{date | formatDate}}</h1>
+  </div>
+  <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+  <script>
+    //对时间进行格式化处理
+    var padDate = function(value){
+      return value < 10 ? '0'+ value:value;
+    };
+
+
+    var app = new Vue({
+      el:'#app',
+      data:{
+        date:new Date()
+      },
+      filters:{
+        formatDate: function (value){
+          var date = new Date(value);
+          var year = date.getFullYear();
+          var month = padDate(date.getMonth()+1);
+          var day = padDate(date.getDate());
+          var hours = padDate(date.getHours());
+          var minutes = padDate(date.getMinutes());
+          var seconds = padDate(date.getSeconds());
+          //整理好的数据返回出去
+          return year+'-'+month+'-'+day+' '+hours+':'+minutes+':'+seconds;
+        }
+      },
+      mounted:function(){
+        var _this = this;//声明一个变量指向Vue实例this，保证作用域一致
+        this.timer = setInterval(function(){
+          _this.date = new Date();
+        },1000);
+      },
+      beforeDestory:function(){
+        if(this.timer){
+          clearInterval(this.timer);//在vue示例销毁前，清除我们的定时器
+        }
+      }
+    })
+  </script>
+</body>
+</html>
