@@ -699,17 +699,735 @@ Js是一门具有**自动垃圾收集机制**的编程语言。
 
 
 
+# ch5 引用类型
 
 
 
+* 在ECMAScript中，**引用类型**是一种数据结构，用于将数据和功能组织在一起（也常被称为类）。
+* 引用类型有时候也被称为**对象定义**，因为它们描述的时一类对象所具有的属性和方法。
+* 对象是某个特定引用类型的**实例**。新对象是使用new后跟一个构造函数来创建的。
+
+## 5.1 Object类型
+
+**创建Object实例的方法**
+
+1. new Object()
+
+   ```js
+   var person = new Object();
+   person.name = "Nike";
+   person.age = 29;
+   ```
+
+2. **对象字面量表示法**
+
+   ```js
+   var person = {
+     name:"nike",
+     age:29
+   };
+   ```
+
+   ```js
+   var person = {};
+   person.name = "Nike";
+   person.age = 29;
+   ```
+
+   实际上，对象字面量也是向函数传递大量可选参数的首选方式，例如、
+
+   ```js
+   function displayInfo(args){
+     var output = "";
+   
+     if(typeof args.name == "string"){ //同故宫typeof来检测每个属性是否存在
+       output += "Name:"+args.name+"\n";
+     }
+     if(typeof args.age == "number"){
+       output += "Age:"+args.age+"\n";
+     }
+     console.log(output);
+   }
+   
+   displayInfo({
+     name:"Nike",
+     age:29
+   });
+   
+   displayInfo({
+     name:"Gree"
+   });
+   ```
+
+**访问对象属性**
+
+```js
+console.log(person.name);//点表示法
+console.log(person["name"]);//方括号语法
+```
+
+方括号语法的主要优点是可以通过变量来访问属性，eg
+
+```js
+var propertyName = "name";
+console.log(person[propertyName]);
+```
 
 
 
+## 5.2 Array类型
+
+* ECMAscript数组的每一项可以保存任何类型的数据
+* 数组大小是动态调整的
+
+**创建数组**
+
+1. 使用Array构造函数
+
+   ```js
+   var colors = new Array(20);
+   var colors2 = new Array("red","blue","green");
+   ```
+
+2. 使用数组字面量表示法
+
+   ```js
+   var colors = ["red","blue","green"];
+   var names = [];
+   ```
+
+**读取和设置数组中的值**
+
+* ```js
+  var colors = ["red","blue","green"];
+  console.log(colors[0]);
+  colors[1]="darkBlue";
+  ```
+
+* 利用length属性可以从数组末尾移除或添加新项
+
+### 5.2.1 检测数组
+
+```js
+if (Array.isArray(value)){
+  //确定其值到底是不是数组
+}
+```
+
+### 5.2.2 转换方法
+
+* 所有对象都具有 **toLocaleString()** **toString()** 和**valueOf()**方法
+
+```js
+var colors = ["red","blue","green"];
+console.log(colors.toString());//red,blue,green
+console.log(colors.valueOf());//[ 'red', 'blue', 'green' ]
+console.log(colors.toLocaleString());//red,blue,green
+```
+
+* 注意：当调用数组的toLocaleString 方法时，为了取得每一项的值，调用的是每一项的toLocale-String()方法
+* join()方法
+
+### 5.2.3 栈方法
+
+ECMAScript为数组专门提供了**push()**和**pop()**方法，以便实现类似栈LIFO的行为
+
+* **push()**接受任意数量的参数，添加到数组末尾，并返回数组长度
+
+  ```js
+  var colors = new Array();
+  var count = colors.push( "red","green");
+  console.log(count);//2
+  
+  count = colors.push("black");
+  console.log(count);
+  ```
+
+* **pop()**从数组末尾移除一项，返回移除的项
+
+  ```js
+  var item = colors.pop();
+  console.log(item);//black
+  ```
+
+* **模拟栈**
+
+  * push() 数组末端添加项，pop()数组末端移除项
+
+### 5.2.4 队列方法
+
+队列FIFO，队列在列表末端添加项，从列表前端移除项
+
+* **shift()**移除数组第一项并返回该项
+
+  ```js
+  var colors = new Array();
+  var count = colors.push( "red","green");
+  console.log(count);//2
+  
+  count = colors.push("black");
+  console.log(count);//3
+  
+  var item = colors.shift();//取得第一项
+  console.log(item);//red
+  ```
+
+* **unshifit()** 在数组前端添加任意个项并返回数组的长度
+
+  ```js
+  var colors = new Array();
+  var count = colors.unshift( "red","green");
+  console.log(count);//2
+  ```
+
+* **模拟队列**
+
+  * push() 数组末端添加项，shift() 数组前端移除项
+  * unshift() 数组前端添加项，pop()数组末端移除项（从相反的方向来模拟队列）
+
+### 5.2.3 重排序方法
+
+* **reverse()**反转数组项顺序
+
+* **sort()**默认升序排列数组项（按照每个数组项toString()得到的字符串来排序）
+
+  ```js
+  var values = [0,1,5,10,15];
+  console.log(values.sort());//[ 0, 1, 10, 15, 5 ]
+  ```
+
+  sort()接受一个比较函数作为参数
+
+  ```js
+  //比较函数接受两个参数
+  //* 如果第一个参数位于第二个之前，返回附属
+  //* 两个参数相等，返回0
+  //* 第一个参数位于第二个之后，返回正数
+  function compare(value1,value2){
+    if(value1<value2){
+      return -1;
+    }else if(value1>value2){
+      return 1;
+    }else{
+      return 0;
+    }
+  }
+  
+  //对于数组类型或者其valueOf()方法会返回数组类型的对象类型，上述可以简化为
+  function compare(value1,value2){
+      return value1-value2;
+  }
+  ```
+
+### 5.2.6 操作方法
+
+* **concat()**基于当前数组中的所有项创建一个新数组
+
+  ```js
+  var colors = ["red","blue","green"];
+  var colors2 = colors.concat("yellow",["black","brown"]);
+  
+  console.log(colors);//[ 'red', 'blue', 'green' ]
+  console.log(colors2);//[ 'red', 'blue', 'green', 'yellow', 'black', 'brown' ]
+  ```
+
+* **slice()**基于当前数组中的一个或多个项创建一个新数组，接受一或两个参数，即要返回项的其实和结束位置（不包括结束位置的项）
+
+  ```js
+  var colors = ["red","blue","green","black","brown"];
+  var colors2 = colors.slice(1);
+  var colors3 = colors.slice(1,4);//同slice(-2,-1)
+  
+  console.log(colors2);//[ 'blue', 'green', 'black', 'brown' ]
+  console.log(colors3);//[ 'blue', 'green', 'black' ]
+  ```
+
+  * 注意：slice()不会影响原数组
+
+* **splice()**
+
+  |      | 含义                                             | 参数                                                | 举例                           |
+  | ---- | ------------------------------------------------ | --------------------------------------------------- | ------------------------------ |
+  | 删除 | 删除任意数量的项                                 | 2参数：要删除的第一项的位置，要删除的项数           | `splice(0,2) 删除数组中前两项` |
+  | 插入 | 任意位置插入任意数量的项                         | 3参数：起始位置，要删除的项数，要插入的项。。       | `splice(2,0,"red","green")`    |
+  | 替换 | 指定位置插入任意数量的项，且同时删除任意数量的项 | 3参数：起始位置，要删除的项数，要插入的任意数量的项 | `splice(2,1,"red","green")`    |
+
+  * 返回被删除的项
+
+### 5.2.7 位置方法
+
+2参数：要查找的项和表示查找起点位置的索引
+
+* **indexOf()**
+* **lastIndexOf()**
+
+### 5.2.8 迭代方法
+
+5个迭代方法，每个方法都接受两个参数：要在每一项上运行的函数（可选）和运行该函数的作用域对象———影响this的值。传入这些方法中的函数会接受三个参数：数组项的值，该项在数组中的位置和数组对象本身
+
+| 迭代方法  | 返回值                                   |      |
+| --------- | ---------------------------------------- | ---- |
+| every()   | 如果该函数对每一项都返回true，则返回true |      |
+| filter()  | 返回该函数会返回true的项组成的数组       |      |
+| forEach() | 无                                       |      |
+| map()     | 返回每次函数调用结果组成的数组           |      |
+| some()    | 如果该函数任一项返回true，则返回true     |      |
+
+```js
+var numbers = [1,2,3,4,5,4,3,2,1];
+
+//every
+var everyRes = numbers.every(function(item,index,array){
+  return (item>2);
+});
+console.log(everyRes);//false
+
+//some
+var someRes = numbers.every(function(item,index,array){
+  return (item>2);
+});
+console.log(someRes);//true
+
+//filter
+var filterRes = numbers.filter(function(item,index,array){
+  return (item>2);
+});
+console.log(filterRes);//[ 3, 4, 5, 4, 3 ]
+
+//map
+var mapRes = numbers.map(function(item,index,array){
+  return item*2;
+});
+console.log(mapRes);//[2, 4, 6, 8, 10,8, 6, 4, 2]
+
+```
+
+### 5.3.9 归并方法
+
+reduce和reduceRight，都会迭代数组的所有项。然后构建一个最终返回的值（他俩差别在于从哪头开始遍历数组）
+
+2个参数：一个在每一项上调用的函数和（可选的）作为归并基础的初始值
+
+该函数4个参数：前一个值，当前值，项的索引和数组对象
+
+```js
+var values = [1,2,3,4,5];
+var sum = values.reduce(function(prev,cur,index,array){
+  return prev+cur;
+});
+console.log(sum);
+```
+
+## 5.3 Date类型
+
+```js
+var now = new Date();
+var someDate = new Date(Date.parse("May 25 2004"));
+var y2k = new Date(Date.UTC(2000,0));
+
+//Date.now()
+var start = Date.now();
+doSomething();
+var stop = Date.now(),
+	result = stop-start;//可以用+获得时间戳
+```
+
+### 5.3.1 继承的方法
+
+Date类型的
+
+* toLacaleStrin() 会按照与浏览器设置的地区相适应的格式返回日期和时间
+* toString()返回带有失去时区信息的日期和实践
+* valueOf() 返回日期的毫秒表示
+
+### 5.3.2 日期格式化方法
+
+Date有一些专门用于将日期格式化为字符串的方法
+
+### 5.3.3 日期/时间组件方法
+
+<img src="《Javascript高级程序设计》笔记.assets/image-20201012150304641.png" alt="image-20201012150304641" style="zoom:80%;" />
+
+<img src="《Javascript高级程序设计》笔记.assets/image-20201012150317932.png" alt="image-20201012150317932" style="zoom:80%;" />
 
 
 
+## 5.4 RegExp类型
+
+### 5.4.1 RegExp实例属性
+
+* global
+* ingonreCase
+* lastIndex
+* multiline
+* source
+
+### 5.4.2 RegExp实例方法
+
+**exec()**
+
+即使在模式中设置了全局标志(g),它每次也只会返回一个匹配项
+
+* 不设置全局标志，在同一个字符串是多次调用exec()将始终返回第一个匹配项的信息
+* 设置全局标志，每次调用会在字符串中继续查找新匹配项
+
+**test()**
+
+返回true/false
+
+### 5.4.3 RegEXp构造函数属性
+
+* input
+* lastMatch
+* lastParen
+* multiline
+* rightContext
+
+## 5.5 Function类型
+
+**函数**是**对象**，**函数名**实际上是一个指向函数对象的**指针**
+
+```js
+function sum(num1,num2){
+  return num1+num2;
+}
+
+var anotherSum = sum;//anotherSum和sum都指向了同一个函数
+```
+
+### 5.5.1 没有重载（深入理解）
+
+同名函数，后面的覆盖前面的
+
+### 5.5.2 函数声明与函数表达式
+
+解析器会率先读取函数声明；对于函数表达式，必须等到解析器执行到它所在的代码行，才会被真正解析执行
+
+```js
+console.log(sum(10,10));//20
+function sum(num1,num2){
+  return num1+num2;
+}
+```
+
+可以正确运行，因为在代码开始执行前，解析器就已经通过一个名为函数声明提升的过程，读取并将函数声明添加到执行环境中。
+
+```js
+console.log(sum(10,10));//sum is not a function
+var sum = function(num1,num2){
+  return num1+num2;
+}
+```
+
+报错，因为函数位于一个初始化语句中，而不是一个函数声明
+
+### 5.5.3 作为值得函数
+
+因为ECMAScript中的函数名本身就是变量，所以函数也可以作为值来使用。
+
+例子：根据传入的属性名创建一个比较函数
+
+```js
+function createComparisonFunction(propertyName){
+
+  return function(object1,object2){
+    var value1 = object1[propertyName];
+    var value2 = object1[propertyName];
+    if(value1<value2){
+      return -1;
+    }else if(value1>value2){
+      return 1;
+    }else{
+      return 0;
+    }
+  }
+}
+```
+
+### 5.5.4 函数内部属性
+
+在函数内部，有两个特殊的对象：arguments和this
+
+**arguments**
+
+是一个类对象数组，保存函数参数。
+
+有一个属性：callee，该属性事一个指针，执行拥有这个arguments对象得函数
+
+```js
+function factorial(num){
+  if(num<=1){
+    return 1;
+  }else{
+    return num*factorial(num-1);
+  }
+}
+
+//用于解除函数体内的代码与函数名的耦和状态
+function factorial(num){
+  if(num<=1){
+    return 1;
+  }else{
+    return num*arguments.callee(num-1);
+  }
+}
+```
+
+**this**
+
+this引用的是函数据以执行的环境对象——或者也可以说是this值（当在网页的全局作用域中调用函数时，this引用的就是window)
+
+```js
+window.color = "red";
+var o = {color:"blue"};
+
+function sayColor(){
+  console.log(this.color);
+}
+
+sayColor();//red 即输出window.color
+
+o.sayColor = sayColor;
+o.sayColor();//blue this引用的时对象o
+```
+
+> **函数的名字仅仅是一个包含指针的变量而异！**因此即使是在不同的环境中执行，全局的sayColor()与o.sayColor()指向的仍然是同一个函数
+
+**caller**
+
+这个属性保存着调用当前函数的函数的引用
+
+**严格模式下的限制与错误**
+
+当函数在严格模式下运行时，访问arguments.callee会导致错误 & 不能为函数的caller属性赋值
+
+### 5.5. 函数属性和方法
+
+每个函数都包含2个属性：length和prototype
+
+**属性1.length**
+
+函数希望接受的命名参数的个数
+
+**属性2. prototype**
+
+对于ECMAScript中的引用类型而言，prototype是保存它们所有实例方法的真正所在，欢聚说话，诸如toString()和valueOf()等方法实际上都保存在prototype名下，只不过是通过各自对象的实例访问罢了。
+
+> ES5中，prototype属性是不可枚举的，因此使用for-in无法发现
+
+**方法1 apply() **
+
+**都是在特定的作用域中调用函数，实际上等于设置函数体内this对象的值**
+
+接受2个参数 1 在其中运行函数的作用域；2 参数数组（数组或arguments对象）
+
+```js
+function sum(num1,num2){
+  return num1+num2;
+}
+
+function callSum1(num1,num2){
+  return sum.apply(this,arguments);//传入arguments对象
+}
+
+console.log(callSum1(10,10));//20
+
+function callSum2(num1,num2){
+  return sum.apply(this,[num1,num2]);//传入数组
+}
+
+console.log(callSum2(10,10));//20
+```
 
 
+
+**方法2 call() **
+
+跟allpy一样，差别在于其余参数都直接传递给函数
+
+```js
+function sum(num1,num2){
+  return num1+num2;
+}
+
+function callSum1(num1,num2){
+  return sum.apply(this,num1,num2);//明确传入每一个参数
+}
+```
+
+**apply & call 扩充函数赖以运行的作用域**
+
+```js
+window.color = "red";
+var o = {color:"blue"};
+
+function sayColor(){
+  console.log(this.color);
+}
+
+sayColor();//red 即输出window.color
+sayColor.call(this)//red
+sayColor.call(window)//red
+
+sayColor.call(o)//blue 函数的执行环境变了，函数体内部的this指向了o
+```
+
+**bind()**创建一个函数的实例，其this值会被绑定到传给bind()函数的值
+
+```js
+window.color = "red";
+var o = {color:"blue"};
+
+function sayColor(){
+  console.log(this.color);
+}
+
+var objectSayColor = sayColor.bind(o);
+objectSayColor();//blue
+```
+
+## 5.6 基本包装类型
+
+3个特殊的引用类型：Boolean Number String
+
+对**基本包装类型的实例调用typeOf会返回“Object”**，而且所有基本包装类型的对象都会被转换为布尔值true
+
+### 5.6.1 Boolean类型
+
+尽量别用
+
+### 5.6.2 Number类型
+
+* toFixed() 指定小数位
+* toExponential() 指数表示法表示的字符串
+* toPrecision() 根据数值自己判断调用上面两个其中的哪一个
+
+### 5.6.3 String类型
+
+1. 字符方法
+   * charAt() charCodeAt()
+   * string[1]
+2. 字符串操作方法
+   * concat()
+   * slice() substring()
+   * substr()
+3. 字符串位置方法
+   * indexOf()
+   * lastIndexOf()
+4. trim()
+5. 字符串大小写转换
+   * toLowerCase
+   * toUpperCase
+6. 字符串的模式匹配方法
+   * match()
+   * search() 返回字符串第一个匹配项的索引
+   * replace()
+   * split
+7. localeCompare（）
+8. fromCharCode()
+
+## 5.7 单体内置对象
+
+> 由ECMAScropt实现提供的，不依赖于宿主环境的对象，这些对象在ECMAScrippt程序之前就已经存在了
+
+JS的内置对象：Object Array String Global Math
+
+### 5.7.1 Global对象
+
+“兜底对象"：不属于任何其他对象的属性和方法，最终都是它的属性和方法
+
+eg isNan() isFinite() parseInt() parseFloat() 以及其他一些方法
+
+**1. URI编码方法**
+
+URI 通用资源标识符
+
+* encodeURIComponent() decodeURIComponent()
+* encodeURI() decodeURI
+
+**2. eval()**
+
+就行一个完整的ECMAScirpt解析器，只接受一个参数，即要是总的js字符串
+
+> 严格模式下，外部访问不到eval中创建的任何变量或函数
+>
+> 小心 **代码注入**
+
+**3. Global对象属性**
+
+除了特殊值 undefined Nan 以及Infinirt都是Global对象的属性，此外，所有原生引用类型的构造函数，eg Object Function 都是Global对象的属性
+
+**4. window对象**
+
+Web浏览器都是将这个全局对象作为window对象的一部分加以实现的。因此，**在全局作用域中声明的所有变量和函数，就都成为了window对象的属性**
+
+### 5.7.2 Math对象
+
+1. Math对象的属性
+
+   Math.E  Math.PI Math.LOG2E....
+
+2. **min() & max()**
+
+   ```js
+   //找到最大值
+   var max = Math.max(3,54,32,16);
+   console.log(max);
+   
+   //把Math对象作为apply的第一个参数，从而正确的设置this值
+   var values =[1,2,3,7,5];
+   var max = Math.max.apply(Math,values);
+   console.log(max);
+   ```
+
+3. **舍入方法**
+
+   * Math.ceil()
+   * Math.floor()
+   * Math.round()
+
+4. **random()**
+
+   ```js
+   //从某个整数范围内随机选择一个值
+   值 = Math.floor(Math.random()*可能值得总数+第一个可能的值)
+   ```
+
+   ```js
+   //随机选择一项
+   function selectFrom(lowerValue,upperValue){
+     var choices = upperValue - lowerValue+1;
+     return Math.floor(Math.random()*choices+lowerValue);
+   }
+   
+   var num = selectFrom(2,10);
+   console.log(num);
+   
+   var colors= ["red","green","blue","yellow"];
+   var color = colors[selectFrom(0,colors.length-1)];
+   console.log(color);
+   ```
+
+5. **其他方法**
+
+   完成计算相关的方法
+
+## 5.8 小结
+
+对象在JS中被称为引用类型的值，而且有一些内置的引用类型可以用来创建特定的对象
+
+* Object是一个基础类型，其他所有类型都从Object继承了基本的行为
+* Array类型
+* Date类型
+* RegExp类型
+
+函数实际上是Function类型的实例，因此函数也是对象，所以函数也拥有方法，可以用来增强其行为
+
+因为有了基本包装类型，送一js中的基本类型值可以被当作对象类方法，三种基本包装类型：Boolean Number String
+
+作用域里早已存在的两个内置对象：Global和Math
+
+## ch6 面向对象的程序设计
 
 
 
