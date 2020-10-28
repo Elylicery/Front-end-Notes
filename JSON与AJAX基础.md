@@ -75,7 +75,7 @@
         //将所有可能出现的ActiveObject版本放在一个数组种
         var xhrArr = ['Microsoft.XMLHTTP','MSXML2.XMLHTTP.6.0','MSXML2.XMLHTTP.5.0','MSXML2.XMLHTTP.4.0','MSXML2.XMLHTTP.3.0','MSXML2.XMLHTTP.2.0'];
         //遍历创建XMLHttpRequest对象
-        var len = xhrArr.length;
+        var len = xhrArr.length，xhr;
         for(var i=0;i<len;i++){
           try{
             //创建XMLHttpRequest对象
@@ -200,7 +200,7 @@ xhr.send(null);
 
 ```js
 xhr.open("post","./server/slider.json?",true);
-xhr.send({user:"zhangsan",id:6});
+xhr.send("username=1234324&pwd=12345");
 //还需要设置http头部信息
 xhr.setRequestHeader("Content-type","application/x-www-form-urlencoded");
 ```
