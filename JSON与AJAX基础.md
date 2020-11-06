@@ -262,6 +262,7 @@ xhr.setRequestHeader("Content-type","application/x-www-form-urlencoded");
           //获得服务器返回的数据
           //console.log(typeof xhr.responseText);//string类型
           data = eval("("+xhr.responseText+")");
+           //  data = JSON.parse(xhr.responseText)
           console.log(data);
            //渲染数据到页面中
           renderDataToDom();
