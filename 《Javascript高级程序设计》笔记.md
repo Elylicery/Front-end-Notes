@@ -1121,7 +1121,7 @@ var sum = function(num1,num2){
 
 报错，因为函数位于一个初始化语句中，而不是一个函数声明
 
-### 5.5.3 作为值得函数
+### 5.5.3 作为值的函数
 
 因为ECMAScript中的函数名本身就是变量，所以函数也可以作为值来使用。
 
@@ -1427,39 +1427,678 @@ Web浏览器都是将这个全局对象作为window对象的一部分加以实�
 
 作用域里早已存在的两个内置对象：Global和Math
 
-## ch6 面向对象的程序设计
+# ch6 面向对象的程序设计
+
+## 6.1 理解对象
+
+创建自定义对象
+
+* 创建一个Object的实例
+
+  ```js
+  var person = new Object();
+  person.name = "Nike";
+  person.age = 29;
+  person.sayName = function(){
+    console.log(this.name);
+  }
+  ```
+
+* 使用创建字面量的形式
+
+  ```js
+  var person = {
+    name:"nike",
+    age:29，
+    sayName:function(){
+      alert(this.name)
+    }
+  };
+  ```
+
+### 6.1.1 属性类型
+
+ECMAScirpt有两种属性：数据属性和访问器属性
+
+**1. 数据属性**
+
+数据属性包含一个数据值的位置。在这个位置可以读取和写入值。数据属性有4个描述其行为的特性
+
+* `[[Configurable]]` 能否通过delete删除属性从而重新定义属性
+* `[[Enumerable]]` 能否通过for-in循环返回属性
+* `[[Writable]]`能否修改属性的值
+* `[[Value]]`包含这个属性的数据值
+
+要修改默认属性的特征，必须使用ECMAScript5的**Object.defineProperty()**方法。
+
+```js
+var person = {};
+Object.defineProperty(person,"name",{
+  writable:false,
+  value:"Nike"
+});
+```
+
+**2. 访问器属性**
+
+访问器属性不包含数据值，包含一对getter和setter函数，
+
+访问器属性有如下4个特征
+
+* `[[Configurable]]`
+* `[[Enumerable]]`
+* `[[Get]]` 读取属性时调用的函数
+* `[[Set]]`写入属性时调用的函数
+
+访问器属性不能直接定义，必须使用**Object。defineProperty()**来定义
+
+```js
+var book = {
+  _year:2004,
+  edition:1
+};
+
+Object.defineProperty(book,"year",{
+  get:function () {
+    return this._year;
+  },
+  set:function(newValue){
+    if(newValue>2004){
+      this._year = newValue;
+      this.edition += newValue-2004;
+    }
+  }
+});
+
+book.year = 2005;
+console.log(book.edition);
+```
+
+把year的值改为2005回导致_year变成2005，而edition变成2.
+
+这是使用访问器属性的常见方式，即设置一个属性的值会导致其他属性发生变化。
+
+### 6.1.2 定义多个属性
+
+**Object.defineProperties()**可以通过描述符一次定义多个属性
+
+```js
+var book = {};
+Object.defineProperties(book,{
+  _year:{
+    writable:true,
+    value2004
+  },
+  edition:{
+    writable:true,
+    value:1
+  },
+  year:{
+    get:function () {
+      return this._year;
+    },
+    set:function(newValue){
+      if(newValue>2004){
+        this._year = newValue;
+        this.edition += newValue-2004;
+      }
+    }
+  }
+});
+```
+
+### 6.1.3 读取属性的特征
+
+**Object.getOwnPropertyDescriptor()**可以取得给定属性的描述符
+
+## 6.2 创建对象
+
+为避免代码重复，使用工程模式
+
+### 6.2.1 工厂模式
+
+用函数来封装以特定接口创建对象的细节
+
+```js
+function createPerson(name,age,job){
+  var o = new Object();
+  o.name= name;
+  o.age = age;
+  o.sayName = function(){
+    console.log(this.name);
+  };
+  return 0;
+}
+
+var person1 = createPerson("Nike",29);
+var person2 = createPerson("Greg",27);
+```
+
+### 6.2.2 构造函数模式
+
+可创建自定义的构造函数，从而定义自定义对象类型的属性和方法
+
+```js
+function Person(name,age){
+  this.name = name;
+  this.age = age;
+  this.sayName = function(){
+    console.log(this.name);
+  }
+}
+var person1 = new Person("Nike",29);
+var person2 = new Person("Greg",27);
+```
+
+构造函数本身也是函数，只不过可以用来创建对象而已
+
+创建Person的新实例，必须使用new操作符
+
+```js
+alert(person1 instanceof Object);//true
+alert(person1 instanceof Person);//true
+```
+
+**创建自定义的构造函数意味着将来可以将它的实例标识为一种特定的类型；而这正是构造函数模式胜过工厂模式的地方**
+
+### 6.2.3 原型模式
+
+我们创建的每个函数都有一个prototype（原型）属性，这个属性是一个指针，指向一个对象，而这个对象的用途是包含可以由特定类型的所有实例共享的属性和方法。
+
+```js
+function Person(){
+}
+Person.prototype.name = "Nike";
+Person.prototype.age = 29;
+Person.prototype.sayName = function(){
+  console.log(this.name);
+}
+
+var person1 = new Person();
+person1.sayName();
+
+var person2 = new Person();
+person2.sayName();
+console.log(person1.sayName == person2.sayName);//true
+```
+
+**1. 理解原型对象**
+
+![image-20201028214712594](《Javascript高级程序设计》笔记.assets/image-20201028214712594.png)
+
+* `Person.prototype`指向了原型对象
+* `Person.prototypr.constructor`又值回了Person
+* person1和person2都包含一个内部属性，该属性仅指向`Person.prototype`
+
+**isPrototype()**
+
+```js
+console.log(Person.prototype.isPrototypeOf(person1));//true
+console.log(Person.prototype.isPrototypeOf(person2));//true
+```
+
+**Object.getPrototypeOf()**
+
+```js
+console.log(Object.getPrototypeOf(person1)==Person.prototype);//true
+console.log(Object.getPrototypeOf(person1).name);//nike
+```
+
+**hasOwnProperty()**
+
+检测一个属性是存在于实例中，还是原型中
+
+```js
+function Person(){
+}
+Person.prototype.name = "Nike";
+Person.prototype.age = 29;
+Person.prototype.sayName = function(){
+  console.log(this.name);
+}
+
+var person1 = new Person();
+var person2 = new Person();
+
+console.log(person1.hasOwnProperty("name"));//false
+
+person1.name = "Greg";
+console.log(person1.name);//"Greg"--来自实例
+console.log(person1.hasOwnProperty("name"));//true
+
+console.log(person2.name);//"Nike"--来自原型
+console.log(person1.hasOwnProperty("name"));//false
+
+delete person1.name;
+console.log(person1.name);//"Nike"--来自原
+console.log(person1.hasOwnProperty("name"));//false
+
+```
+
+![image-20201028220132569](《Javascript高级程序设计》笔记.assets/image-20201028220132569.png)
+
+**2.原型与in操作符**
+
+**in**
+
+**for-in**
+
+原型中不可枚举的属性（即Enumerable标记为false的）实例属性也会返回
+
+```js
+var o = {
+  toString:function(){
+    return "My Object";
+  }
+};
+for(var prop in o){
+  if(prop == "toString"){
+    console.log("Found toString");
+  }
+}
+//打印出Found toString
+```
+
+**Object.keys**
+
+取得对象上所有可枚举的实例属性
+
+**Object.getOwnPropertyNames()**
+
+取得所有实例属性，无论是否可美剧
+
+**3. 更简单的原型语法**
+
+```js
+function Person(){
+}
+
+Person.prototype ={
+  name:"Nike",
+  age:29,
+  sayName:function(){
+    console.log(this.name);
+  }
+}
+```
+
+与之前相同，但constructor属性不再指向person
+
+```js
+var friend = new Person();
+console.log(friend instanceof object);//true
+console.log(friend instanceof Person);//true
+console.log(friend.constructor == Person);//false;
+console.log(friend.constructor == Object);//true;
+```
+
+**4. 原型的动态性**
+
+实例与原型之间是松散链接关系
+
+```js
+function Person(){
+}
+
+var friend = new Person();
+
+Person.prototype ={
+  name:"Nike",
+  age:29,
+  sayName:function(){
+    console.log(this.name);
+  }
+}
+
+friend.sayName();//error
+```
+
+![image-20201029092845980](《Javascript高级程序设计》笔记.assets/image-20201029092845980.png)
+
+**5. 原生对象的原型**
+
+可以修改原生对象的原型，因此可以随时添加方法
+
+（不推荐，有可能意外的重写原生方法）
+
+```js
+String.prototype.startsWith = function(text){
+  return this.indexOf(text) == 0;
+};
+
+var msg = "Hello world";
+console.log(msg.startsWith("Hello"));//true
+```
+
+**6. 原型对象的问题**
+
+包含基本只的属性共享ok，对于包含引用类型值的属性不ok
+
+```js
+function Person(){
+}
+
+var friend = new Person();
+
+Person.prototype ={
+  name:"Nike",
+  age:29,
+  /*注意这是一个包含引用类型值的属性*/
+  friends:["sun","amy"],
+  sayName:function(){
+    console.log(this.name);
+  }
+}
+
+var person1 = new Person();
+var person2 = new Person();
+
+person1.friends.push("Van");
+
+console.log(person1.friends);//[ 'sun', 'amy', 'Van' ]
+console.log(person2.friends);//[ 'sun', 'amy', 'Van' ]
+console.log(person1.friends === person2.friends);//true
+
+```
+
+### 6.2.4 组合使用构造函数和原型模式
+
+```js
+//构造函数用于定义实例属性
+function Person(name,age){
+  this.name = name;
+  this.age = age;
+  this.friends = ["she","conu"];
+}
+//原型方法定义方法和共享的属性
+Person.prototype ={
+  constructor:Person,
+  sayName:function(){
+    console.log(this.name);
+  }
+}
+
+var person1 = new Person("Nike",29);
+var person2 = new Person("Greg",27);
+
+person1.friends.push("Van");
+
+console.log(person1.friends);//[ 'sun', 'amy', 'Van' ]
+console.log(person2.friends);//[ 'sun', 'amy']
+console.log(person1.friends === person2.friends);//false
+console.log(person1.sayName === person2.sayName);//true
+```
+
+## 6.3 继承
+
+### 6.3.1 原型链
+
+基本思想：利用原型让一个引用类型继承另一个引用类型的属性和方法
+
+### 6.3.2 借用构造函数
+
+### 6.3.3 组合继承
+
+```js
+function SuperType(name){
+  this.name = name;
+  this.colors = ["red","blue","green"];
+}
+SuperType.prototype.sayName = function(){
+  console.log(this.name);
+};
+
+function SubType(name,age){
+  //继承属性
+  SuperType.call(this,name);
+  
+  this.age = age;
+}
+//继承方法
+SubType.prototype = new SuperType();
+SubType.prototype.constructor = SubType;
+SubType.prototype.sayAge = function(){
+  console.log(this.age);
+};
+
+//两个不同的SubType实例
+var instance1 = new SubType("Nike",29);
+instance1.colors.push("black");
+console.log(instance1.colors);//[ 'red', 'blue', 'green', 'black' ]
+instance1.sayName();//Nike
+instance1.sayAge();//29
+
+var instance2 = new SubType("Greg",17);
+console.log(instance2.colors);//[ 'red', 'blue', 'green' ]
+instance2.sayName();//greg
+instance2.sayAge();//17
+```
 
 
 
+## 6.4 小结
+
+ECMAScript支持OO变成，但不使用类或接口。对象可以在代码执行过程中创建和增强，因此具有动态性而非严格定义的实体。
+
+在没有类的情况下，可以采用下列模式创建对象
+
+* **工厂模式**
+* **构造函数模式**
+* **原型模式** 使用构造函数的propotype属性来指定那些应该共享的属性和方法
+* 组合使用构造函数和原型模式时。使用构造函数定义实例属性，使用原型定义共享的属性和方法
+
+JS主要通过原型链实现继承，**原型链的构建是通过将一个类型的实例赋值给另一个构造函数的原型实现的**，这样，子类型就能够访问超类型的所有属性和方法。
+
+* 问题：对象实例共享所有继承的属性和方法，因此不适宜单独使用
+* 解决：借用构造函数，即在子类型构造函数的内部调用超类型构造函数，这样，每个实例都具有自己的属性，同时还能保证只使用构造函数模式来定义类型。
+* **使用最多：组合继承**，使用原型链继承共享的属性和方法，而通过借用构造函数继承实例属性
+
+# ch7 函数表达式
+
+函数提升
+
+## 7.1 递归
+
+编写递归时，用`argumnents.callee`代替函数名
+
+```js
+function factorail(num){
+  if(num<=1){
+    return 1;
+  }else{
+    return num*arguments.callee(num-1);
+  }
+}
+```
+
+## 7.2 闭包
+
+**闭包**是指有权访问另一个函数作用域中的变量的函数。
+
+创建闭包最常见的方式：就是在一个函数内部创建另外一个函数
+
+```js
+function createComparisonFunction(propertyName){
+
+  return function(object1,object2){
+    var value1 = object1[propertyName];
+    var value2 = object1[propertyName];
+    if(value1<value2){
+      return -1;
+    }else if(value1>value2){
+      return 1;
+    }else{
+      return 0;
+    }
+  }
+}
+```
+
+### 7.2.1 闭包与变量
+
+**作用域链的副作用：闭包只能取得包含函数中任何变量的最后一个值。即闭包所保存的是整个变量对象，而不是某个特殊的变量**
+
+```js
+function createFunctions(){
+  var result = new Array();
+  for(var i=0;i<10;i++){
+    result[i] = function () {
+      return i;
+    }
+  }
+  return result;
+}
+
+var res = createFunctions();
+for(var i=0;i<10;i++){
+  console.log(res[i]());//全打印出10
+}
+```
+
+通过创建一个匿名函数强制让闭包的行为符合预期
+
+```js
+function createFunctions(){
+  var result = new Array();
+  for(var i=0;i<10;i++){
+    result[i] = function (num) {
+      return function(){
+        return num;
+      };
+    }(i);
+  }
+  return result;
+}
+
+var res = createFunctions();
+for(var i=0;i<10;i++){
+  console.log(res[i]());//1,2,3,4,5,6,7,8,9
+}
+```
+
+### 7.2.2 关于this对象
+
+**this对象是在运行时基于函数的执行环境绑定的：**
+
+* 在全局函数中，this等于window
+* 而当函数被作为某个对象的方法调用时，this等于那个对象
+
+**不过，匿名函数的执行环境具有全局性，因此其this对象通常指向window**
+
+```js
+var name ="the window";
+
+var object = {
+  name:"my object",
+
+  getNameFunc : function(){
+    return function(){
+      return this.name;
+    };
+  }
+};
+
+console.log(object.getNameFunc()());//the window
+```
+
+定义匿名函数之前，把this对象赋值给了一个名叫that的变量
+
+```js
+var name ="the window";
+
+var object = {
+  name:"my object",
+
+  getNameFunc : function(){
+    var that = this;
+    return function(){
+      return that.name;
+    };
+  }
+};
+
+console.log(object.getNameFunc()());//my object
+```
 
 
 
+## 7.2.3 内存泄漏
 
+## 7.3 模仿块级作用域
 
+用户块级作用域（私有作用域）的匿名函数的语法：
 
+```js
+(function(){
+  //这里是块级作用域
+})();
+```
 
+## 7.4 私有变量
 
+**特权方法:**有权访问私有变量和私有函数的公有方法
 
+在对象上创建特权方法的方式
 
+**1.在构造函数中定义特权方法**
 
+```js
+function MyObject(){
+  //私有变量和私有函数
+  var privateVariable = 10;
+  function privateFunction(){
+    return false;
+  }
+  //特权方法
+  this.publicMethod = function(){
+    privateVariable++;
+    return privateFunction();
+  }
+}
+```
 
+### 7.4.1 静态私有变量
 
+**2. 通过在私有作用域中定义私有变量或函数，同样也可以创建特权方法**
 
+```js
+(function(){
+  //私有变量和私有函数
+  var privateVariable = 10;
+  function privateFunction(){
+    return false;
+  }
+  //构造函数
+  MyObject= function(){};
 
+  //公有/特权方法
+  MyObject.prototype.publicMethod = function(){
+    privateVariable++;
+    return privateFunction();
+  }
+})();
+```
 
+### 7.4.2 模块模式
 
+### 7.4.3 增强的模块模式
 
+## 7.5 小结
 
+函数表达式可以无需对函数命名，从而实现动态编程。
 
+* 函数声明要求要有名字，但函数表达式不需要。没有名字的函数表达式叫做匿名函数
+* 递归函数应使用argument.callee来递归的调用自身，不要使用函数名—— 函数名可能会发生变化
 
+当在函数内部定义了其他函数时，就创建了**闭包**。闭**包有权访问函数内部的所有变量，**原理如下
 
+* 在后台执行环境中，闭包的作用域链包含着它自己的作用域，包含函数的作用域和全局作用域
+* 通常，函数的作用域及其所有变量都会在函数执行结束时销毁
+* 但当函数返回了一个闭包，这个函数的作用域会一直在内存中保存直到闭包不存在
 
+**使用闭包可以在js中模仿块级作用域。**
 
-
-
-
-
-
+**闭包还可以用在对象中创建私有变量**
 
 
 
