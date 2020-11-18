@@ -1627,7 +1627,7 @@ console.log(person1.sayName == person2.sayName);//true
 ![image-20201028214712594](《Javascript高级程序设计》笔记.assets/image-20201028214712594.png)
 
 * `Person.prototype`指向了原型对象
-* `Person.prototypr.constructor`又值回了Person
+* `Person.prototype.constructor`又值回了Person
 * person1和person2都包含一个内部属性，该属性仅指向`Person.prototype`
 
 **isPrototype()**
@@ -1670,7 +1670,7 @@ console.log(person2.name);//"Nike"--来自原型
 console.log(person1.hasOwnProperty("name"));//false
 
 delete person1.name;
-console.log(person1.name);//"Nike"--来自原
+console.log(person1.name);//"Nike"--来自原型
 console.log(person1.hasOwnProperty("name"));//false
 
 ```
