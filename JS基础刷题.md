@@ -472,7 +472,7 @@ function matchesPattern(str) {
 【备注】^ 表示开头 $ 表示结尾
 
 6. 给定字符串 str，检查其**是否符合美元书写格式**
-   1、以 $ 开始
+   1、以 `$` 开始
    2、整数部分，从个位起，满 3 个数字用 , 分隔
    3、如果为小数，则小数部分长度为 2
    4、正确的格式如：$1,023,032.03 或者 $2.03，错误的格式如：$3,432,12.12 或者 $34,344.3
@@ -482,6 +482,113 @@ function isUSD(str) {
 	return /^\$\d{1,3}(,\d{3})*(\.\d{2})?$/.test(str);
 }
 ```
+
+7. 判断是否**合格邮箱**
+
+   ```js
+   function isAvailableEmail(sEmail) {
+     var emailReg = /^([A-Za-z0-9_\-\.])+\@([A-Za-z0-9_\-\.])+\.([A-Za-z]{2,4})$/;
+     return emailReg.test(sEmail);
+   }
+   ```
+
+8. **颜色字符串转换**
+
+   将 rgb 颜色字符串转换为十六进制的形式，如 rgb(255, 255, 255) 转为 #ffffff
+
+   1、rgb 中每个 , 后面的空格数量不固定
+
+   2、十六进制表达式使用六位小写字母
+
+   3、如果输入不符合 rgb 格式，返回原始输入
+
+   
+
+   输入：
+
+   ```js
+   'rgb(255, 255, 255)'
+   ```
+
+   输出：
+
+   ```js
+   #ffffff
+   ```
+
+   答案：
+   
+   ```js
+   function rgb2hex(sRGB) {
+     var hexRGB = sRGB.replace(/^rgb\((\d+)\s*\,\s*(\d+)\s*\,\s*(\d+)\)$/g,function(a,r,g,b){
+       return '#' + hex(r) + hex(g) + hex(b);
+     });
+     return hexRGB;
+   }
+   function hex(n){
+     var num = Number(n);
+     return num<16 ? '0'+num.toString(16):num.toString(16)
+   }
+   ```
+   
+   注意：
+   
+   * 代表正则匹配的整个字符串, r ,g, b代表红绿蓝三个通道, 分别是正则中的三个括号匹配的字符串. 通常用的$0, $1, $2, $3, 个人习惯喜欢起好记的别名
+   * 颜色值使用函数RGB记法，即rgb(color)的时候，其整数范围就是0~255
+   
+9. **字符串转为驼峰格式**
+
+   css 中经常有类似 background-image 这种通过 - 连接的字符，通过 javascript 设置样式的时候需要将这种样式转换成 backgroundImage 驼峰格式，请完成此转换功能
+
+   1. 以 - 为分隔符，将第二个起的非空单词首字母转为大写
+   2. webkit-border-image 转换后的结果为 webkitBorderImage
+
+   输入
+
+   ```js
+   'font-size'
+   ```
+
+   输出
+
+   ```js
+   fontSize
+   ```
+
+   常规答案
+
+   ```js
+   function cssStyle2DomStyle(sName) {
+     let arr = [...sName]
+     if(arr[0]==='-') arr = arr.slice(1)
+     for(let i=0;i<sName.length;i++){
+       if(arr[i]==='-'){
+         arr.splice(i,1);
+         arr[i] = arr[i].toUpperCase();
+       }
+     }
+     return arr.join('')
+   }
+   ```
+
+   利用正则
+
+   解法1：
+
+   ```
+   function cssStyle2DomStyle(sName) {
+     return sName.replace(/-([a-z])/g,function(t,m,i){
+       return i?m.toUpperCase():m;
+     });
+   }
+   ```
+
+   * 前一位有-的字符替换为大写【-([a-z])】
+   * replace第二个参数为函数时：函数的第一个参数是匹配模式的字符 【t】；接下来的参数是与模式中的子表达式匹配的字符，可以有0个或多个这样的参数。【m】；接下来的参数是一个整数，代表匹配在被替换字符中出现的位置【i】；最后一个参数是被替换字符本身【这里没有用到】
+
+   
+
+   
 
 # 12 数组合集
 
@@ -499,10 +606,348 @@ function isUSD(str) {
 **删除最后一个元素**
 
 * `newArr = arr.slice(0,arr.length-1)`
-* arr.pop()
+* `arr.pop()`
 
 **删除数组第一个元素**
 
 * `arr.splice(0,1)`
 * `arr.shift()`
 * `arr.slice(1)`
+
+# 13 获取url参数
+
+获取 url 中的参数
+
+1. 指定参数名称，返回该参数的值 或者 空字符串
+2. 不指定参数名称，返回全部的参数对象 或者 {}
+3.  如果存在多个同名参数，则返回数组
+
+输入
+
+```
+http://www.nowcoder.com?key=1&key=2&key=3&test=4#hehe key
+```
+
+输出
+
+```
+[1, 2, 3]
+```
+
+**答案1 使用正则**
+
+```js
+function getUrlParam(sUrl,sKey){
+	var result = {};
+	sUrl.replace(/\??(\w+)=(\w+)&?/g,function(a,k,v){
+		if(result[k] !== void 0){
+			var t = result[k];
+			result[k] = [].concat(t,v);
+		}else{
+			result[k] = v;
+		}
+	});
+	if(sKey === void 0){
+		return result;
+	}else{
+		return result[sKey] || '';
+	}
+}
+
+var res = getUrlParam("http://www.nowcoder.com?key=1&key=2&key=3&test=4#hehe","key");
+console.log(res);
+```
+
+1. replace()的第一个参数是一个正则表达式，第二个参数是一个回调函数，每匹配到一个符合正则表达式的结果就回调一次。参数a代表该次匹配到的字符串，k代表该次匹配到的字符串中符合第一个分组的部分，v代表该次匹配到的字符串中符合第二个分组的部分
+2. 当concat()的参数是具体的值时，意味着将参数连接到调用concat()方法的数组上。result原本是一个空的对象，当回调函数第一次执行时，向该对象添加了一个key-value对，但此时的value是一个字符串"1"。因此，在回调函数第二次执行时，要向一个空数组添加字符串"1"和"2"，这也是为什么要用[].concat(k,v)。
+3. 正则表达式的开头的\?是不能省略的，否则.com?key=1匹配不到。
+
+**答案2 我的代码**
+
+利用string的substr和indexof切割字符串的思路
+
+```js
+function getUrlParam(sUrl, sKey) {
+  var start = sUrl.indexOf("?");
+  var end = sUrl.indexOf("#") || sUrl.length-1;
+  var subUrl = sUrl.slice(start+1,end);
+  //console.log(subUrl);
+  
+  var keysArr = subUrl.split("&");
+  var map = {};
+  keysArr.forEach(item => {
+    let [key,value=''] = item.split('=');
+    let hasMapKey = Reflect.has(map,key)
+    if(hasMapKey){
+        map[key].push(value)
+    }else{
+        map[key] = [value]
+    }
+  });
+
+  //未指定key
+  if(sKey === undefined || sKey === ""){
+    return map;
+  }
+
+  let res = map[sKey] || [''];
+  return res.length === 1 ?res[0]:res;
+}
+```
+
+# 14 dom节点查找
+
+（完全不会）
+
+题目：查找两个节点的最近的一个共同父节点，可以包括节点自身
+
+输入描述:
+
+```
+oNode1 和 oNode2 在同一文档中，且不会为相同的节点
+```
+
+**思路**
+
+js中的 contains方法，用于判断某个节点是不是另一个节点的后代
+
+**代码1**
+
+不用去递归也不用管谁包含谁，只要随便找一个节点，直到某个祖先节点（或自己）包含另一个节点就行了。
+oNode.contains(oNode)是等于true的
+
+```js
+function commonParentNode(oNode1, oNode2) {
+  for(;oNode1;oNode1=oNode1.parentNode){
+    if(oNode1.contains(oNode2)){
+      return oNode1;
+    }
+  }
+}
+```
+
+**代码2 递归查找**
+
+验证一个节点是否包含另一个节点就好了吧，不必验证两次，反正如果是被包含的关系，往上爬的时候会遇到另一个节点的。
+
+```js
+function commonParentNode(oNode1, oNode2) {
+  if(oNode1.contains(oNode2)){
+    return oNode1;
+  }else{
+    return commonParentNode(oNode1.parentNode,oNode2)
+  }
+}
+```
+
+# 15 根据包名，在指定空间中创建对象
+
+根据包名，在指定空间中创建对象
+
+输入描述:
+
+```
+namespace({a: {test: 1, b: 2}}, 'a.b.c.d')
+```
+
+输出描述:
+
+```
+{a: {test: 1, b: {c: {d: {}}}}}
+```
+
+（完全不会）
+
+```js
+function namespace(oNamespace, sPackage) {
+  var arr = sPackage.split('.');
+  var res = oNamespace;	// 保留对原始对象的引用
+
+  for(var i = 0, len = arr.length; i < len; i++) {
+    if(arr[i] in oNamespace) {	// 空间名在对象中
+      if(typeof oNamespace[arr[i]] !== "object") {	// 为原始值	
+        oNamespace[arr[i]] = {};    // 将此属性设为空对象			
+      }	
+    } else {	// 空间名不在对象中，建立此空间名属性，赋值为空
+      oNamespace[arr[i]] = {};
+    } 
+    oNamespace = oNamespace[arr[i]];	// 将指针指向下一个空间名属性。
+  }
+  return res;
+}
+
+```
+
+# 16 数组去重
+
+（没做对）
+
+为 Array 对象添加一个去除重复项的方法
+
+输入
+
+```
+[false, true, undefined, null, NaN, 0, 1, {}, {}, 'a', 'a', NaN]
+```
+
+输出
+
+```
+[false, true, undefined, null, NaN, 0, 1, {}, {}, 'a']
+```
+
+```js
+Array.prototype.uniq = function () {
+  return Array.from(new Set(this))
+}
+
+let input = [false, true, undefined, null, NaN, 0, 1, {}, {}, 'a', 'a', NaN];
+let res = input.uniq();
+console.log(res);
+```
+
+**总结：数组去重的几种方法**
+
+1. **利用reduce**
+
+   ```js
+   let arr = [1,2,1,3]
+   
+   let newarr = arr.reduce(function(prev,cur){
+     prev.indexOf(cur) == -1 && prev.push(cur);
+     return prev
+   },[])
+   console.log(newarr);//[1, 2, 3]
+   ```
+
+2. **利用set的成员唯一性**
+
+   ```js
+   let arr = [1,2,3,4,2,3];
+   let s = new Set(arr);
+   console.log(s);
+   ```
+
+# 17 时间格式化输出
+
+按所给的时间格式输出指定的时间
+
+格式说明
+对于 2014.09.05 13:14:20
+
+* yyyy: 年份，2014  yy: 年份，14
+* MM: 月份，补满两位，09  M: 月份, 9
+* dd: 日期，补满两位，05 d: 日期, 5
+* HH: 24制小时，补满两位，13  H: 24制小时，13
+* hh: 12制小时，补满两位，01 h: 12制小时，1
+* mm: 分钟，补满两位，14 m: 分钟，14
+* ss: 秒，补满两位，20 s: 秒，20
+* w: 星期，为 ['日', '一', '二', '三', '四', '五', '六'] 中的某一个，本 demo 结果为 五
+
+输入
+
+```
+formatDate(new Date(1409894060000), 'yyyy-MM-dd HH:mm:ss 星期w')
+```
+
+输出
+
+```
+2014-09-05 13:14:20 星期五
+```
+
+```js
+function formatDate(t,str){
+  var obj = {
+    yyyy:t.getFullYear(),
+    yy:(""+ t.getFullYear()).slice(-2),
+    M:t.getMonth()+1,
+    MM:("0"+ (t.getMonth()+1)).slice(-2),
+    d:t.getDate(),
+    dd:("0" + t.getDate()).slice(-2),
+    H:t.getHours(),
+    HH:("0" + t.getHours()).slice(-2),
+    h:t.getHours() % 12,
+    hh:("0"+t.getHours() % 12).slice(-2),
+    m:t.getMinutes(),
+    mm:("0" + t.getMinutes()).slice(-2),
+    s:t.getSeconds(),
+    ss:("0" + t.getSeconds()).slice(-2),
+    w:['日', '一', '二', '三', '四', '五', '六'][t.getDay()]
+  };
+  return str.replace(/([a-z]+)/ig,function($1){return obj[$1]})
+}
+
+let res = formatDate(new Date(1409894060000), 'yyyy-MM-dd HH:mm:ss 星期w');
+console.log(res);
+```
+
+备注
+
+* $1, $2, ... $99 表示字符串中与regexp中的第1到第99个子表达式相匹配的文本
+* `+`表示匹配元字符1次或多次
+* `i` 忽略大小写
+
+# 18 获取字符串长度
+
+如果第二个参数 bUnicode255For1 === true，则所有字符长度为 1
+否则如果字符 Unicode 编码 > 255 则长度为 2
+
+输入
+
+```
+'hello world, 牛客', false
+```
+
+输出
+
+```
+17
+```
+
+做出来了，主要是看下uncideo编码
+
+```js
+function strLength(s, bUnicode255For1) {
+  if(bUnicode255For1) return s.length;
+
+  let num = 0;
+  for(let i=0;i<s.length;i++){
+    if(s.charCodeAt(i) > 255){
+      num += 2;
+    }else{
+      num +=1;
+    }
+  }
+  return num;
+}
+```
+
+**总结**
+
+1、charAt（）：把字符串分成每一个字符，从左往右提取指定位置的字符。
+
+```html
+var str = '天气';
+alert( str.charAt(1) );            //气
+```
+
+2、**charCodeAt （）**：在第一个的基础上，返回的是字符的unicode编码。
+
+```html
+var str = '天气';
+alert( str.charCodeAt(0) );        //22825
+```
+
+3、**String.fromCharCode（）**：通过编码值在unicode编码库中查找出对应的字符。
+
+```html
+alert( String.fromCharCode(22825, 27668) );            //天气
+```
+
+4、当两个字符串进行大小比较时，比的是第一个字符的unicode编码的大小：
+
+```html
+alert( 'abbbbb' > 'b' );                //unicode编码中a<b，所以是false；
+alert( '10000' > '2' );                 //unicode编码中1<2，所以是false；
+```
