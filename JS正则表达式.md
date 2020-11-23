@@ -596,6 +596,14 @@ function trim(str){
 console.log(trim(" Lucy  "));
 ```
 
+【补充】：去除字符串中间的所有空白字符
+
+```js
+str = str.replace(/\s*/g,'');
+```
+
+
+
 ## 转驼峰
 
 * `css：background-color:red`
