@@ -4,7 +4,7 @@
 
 ## 1.1 什么是ajax及为什么要使用ajax
 
-### **什么是Ajax?**
+### 什么是Ajax?
 
 * Ajax = Asynchronous JavaScript and XML（即**异步的JavaScript和XML**），它并不是一种新的编程语言，而是几种原有技术的结合体
 * ajax是一种在**无需重新加载整个网页的情况下，能够更新部分网页**的技术
@@ -27,16 +27,16 @@
 
 ## 2.1 XMLHttpRequest对象
 
-### **什么是XMLHttpRequest?**
+### 什么是XMLHttpRequest?
 
 * 是一种**支持异步请求的技术**，它是Ajax的核心
 
-### **XMLHttpRequest的作用**
+### XMLHttpRequest的作用
 
 * 可以**向浏览器提出请求并处理响应**，而不阻塞用户
 * 可以在页面加载以后进行页面的**局部更新**
 
-### **如何使用Ajax？**
+### 如何使用Ajax？
 
 <img src="img/image-20201025150759590.png" alt="image-20201025150759590" style="zoom: 67%;" />
 
