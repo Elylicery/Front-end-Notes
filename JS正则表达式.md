@@ -1,3 +1,5 @@
+
+
 # 正则表达式
 
 # 1. 介绍
@@ -571,7 +573,7 @@ console.log(str.replace(pattern,function($0){
 | 邮箱 | `/(?:\w+\.)*(\w+)@(?:\w+\.)+([a-z])/i`                       |                                |
 | url  | 略复杂，看你想匹配哪些内容                                   | 协议/主机名（：端口号）路径    |
 
-## **去除字符串首尾的空白字符**
+## 去除字符串首尾的空白字符
 
 多个简单正则处理效果有时候可能更好
 
@@ -683,23 +685,51 @@ console.log(strEx.match(patternCommon));//[ '<input type="text" value=">" name="
 
 
 
+# 9 正则表达式刷题
+
+## 9.1 字符替换
 
 
 
+![image-20201216113845767](JS正则表达式.assets/image-20201216113845767.png)
 
 
 
+```js
+function filterSensitiveWord(input){
+  var sensitive = input[input.length-1];
+  var output = input[0];
+  for(var j=0;j<sensitive.length;j++){
+    //var pattern = new RegExp(sensitive[j],"g");
+    var pattern = new RegExp(`${sensitive[j]}`,"g");
+    output = output.replace(pattern,'*'.repeat(sensitive[j].length));
+  }
+  return output;
+}
+
+var input = ['想要轻生,have sex,sexy babe',['轻生','sex']];
+console.log(filterSensitiveWord(input));
+```
+
+## 9.2 收集单词并反转
 
 
 
+![image-20201216113942398](JS正则表达式.assets/image-20201216113942398.png)
 
+```js
+function reverseStr(str){
+  var pattern = /[^\s]+/g;//匹配单词
+  str = str.match(pattern);
+  console.log(str);
+  str = str.reverse();
+  console.log(str);
+  return str.join(' '); 
+}
 
-
-
-
-
-
-
+var res = reverseStr('the	sky	is												blue!');
+console.log(res);
+```
 
 
 
