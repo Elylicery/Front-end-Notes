@@ -614,6 +614,13 @@ function isUSD(str) {
 * `arr.shift()`
 * `arr.slice(1)`
 
+**判断两个数组是否相等**
+
+两个数组对象不能直接用 == 判断是否相等，可以使用
+
+* `arr.toString()`
+* `JSON.stringify(arr)`
+
 # 13 获取url参数
 
 获取 url 中的参数
