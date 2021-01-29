@@ -24,9 +24,10 @@
 
 ## 2.1 面向对象概述
 
-<img src="JS面向对象.assets/image-20201006165915768.png" alt="image-20201006165915768" style="zoom: 33%;" />
+**面向对象**
 
-<img src="JS面向对象.assets/image-20201006165923541.png" alt="image-20201006165923541" style="zoom: 33%;" />
+* 对代码的一种抽象，对外提供统一调用接口的编程思想
+* **基于原型的面向对象方式中，对象(Object)是依靠构造器（Constructor）利用原型（prototype）构造出来的**
 
 <img src="JS面向对象.assets/image-20201006170007209.png" alt="image-20201006170007209" style="zoom: 33%;" />
 
@@ -335,7 +336,7 @@ console.log(p.__proto__ == person.prototype);//true
 
 原型链：
 
-```
+```js
 var person = function(){
   __proto__
 };
@@ -376,7 +377,7 @@ programmer.prototype.salary = 1000;
 var p = new programmer();
 //var p = new programmer(); p.__proto__ = programmer.prototype = new person()
 //上面也可以拆开有两部 var p1 = new person() ;programmer.prototype = p1
-p.say();//p.__proto__ --> programmer.prototype == p1 -->p1.__proto__ == preson.prototype.say();
+p.say();//查找过程：p.__proto__ --> programmer.prototype == p1 -->p1.__proto__ == person.prototype.say();
 p.wcd();
 console.log(p.salary);
 
