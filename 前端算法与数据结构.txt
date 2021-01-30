@@ -3077,17 +3077,83 @@ var rob = function(nums) {
 
 # 第14章 贪心算法
 
-共 5 节 (25分钟) 收起列表
+## 14-1 贪心算法
 
--  14-1 贪心算法简介 (04:24)
--  14-2 LeetCode：455. 分饼干 (09:42)
--  14-3 LeetCode：122. 买卖股票的最佳时机 II (09:02)
--  14-4 贪心算法-章节总结 (01:19)
--  14-5 【勤于思考，夯实学习成果】阶段思考题
+<img src="D:\Users\Documents\[note]前端笔记\前端算法与数据结构.assets\image-20210130220821183.png" alt="image-20210130220821183" style="zoom: 33%;" />
 
-- 
+贪心算法的负面例子：
 
+<img src="D:\Users\Documents\[note]前端笔记\前端算法与数据结构.assets\image-20210130220832311.png" alt="image-20210130220832311" style="zoom:33%;" />
 
+对6来说，3+3只需要2个币
+
+**【注意】：贪心算法不一定总能求得最优解**
+
+## 14-2 LeetCode：455. 分饼干 
+
+<img src="D:\Users\Documents\[note]前端笔记\前端算法与数据结构.assets\image-20210130215136840.png" alt="image-20210130215136840" style="zoom:60%;" />
+
+<img src="D:\Users\Documents\[note]前端笔记\前端算法与数据结构.assets\image-20210130220930687.png" alt="image-20210130220930687" style="zoom:33%;" />
+
+<img src="D:\Users\Documents\[note]前端笔记\前端算法与数据结构.assets\image-20210130220918227.png" alt="image-20210130220918227" style="zoom:33%;" />
+
+```js
+/**
+ * @param {number[]} g
+ * @param {number[]} s
+ * @return {number}
+ */
+var findContentChildren = function(g, s) {
+    const sortFunc = function(a,b){
+        return a-b;
+    }
+    //先排序
+    g.sort(sortFunc);
+    s.sort(sortFunc);
+    let i = 0;
+    //遍历饼干数组
+    s.forEach(n=>{
+        if(n>=g[i]){
+            i+=1;
+        }
+    });
+    return i;
+};
+```
+
+时间：O（nlogn）
+
+空间：O(1)
+
+## 14-3 LeetCode：122. 买卖股票的最佳时机 II 
+
+<img src="D:\Users\Documents\[note]前端笔记\前端算法与数据结构.assets\image-20210130215809813.png" alt="image-20210130215809813" style="zoom: 50%;" />
+
+<img src="D:\Users\Documents\[note]前端笔记\前端算法与数据结构.assets\image-20210130215835622.png" alt="image-20210130215835622" style="zoom:50%;" />
+
+<img src="D:\Users\Documents\[note]前端笔记\前端算法与数据结构.assets\image-20210130220947882.png" alt="image-20210130220947882" style="zoom:33%;" />
+
+<img src="D:\Users\Documents\[note]前端笔记\前端算法与数据结构.assets\image-20210130220901675.png" alt="image-20210130220901675" style="zoom:33%;" />
+
+```js
+/**
+ * @param {number[]} prices
+ * @return {number}
+ */
+var maxProfit = function(prices) {
+    let profit = 0;
+    for(let i=1;i<prices.length;i++){
+        if(prices[i]>prices[i-1]){
+            profit += prices[i]-prices[i-1];
+        }
+    }
+    return profit;
+};
+```
+
+时间：O(n)
+
+空间 ：O（1）
 
 # 第15章 算法设计思想之“回溯算法”
 
