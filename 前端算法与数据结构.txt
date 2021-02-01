@@ -3155,15 +3155,125 @@ var maxProfit = function(prices) {
 
 空间 ：O（1）
 
-# 第15章 算法设计思想之“回溯算法”
+# 第15章 回溯算法
 
-遇到岔路，先选择一条路走，走不通拐回来走另一条路，直到走通为止。所谓“拐回来”，就是回溯。听起来很高大上？不不不，很简单，来听听老司机怎样逐步剖析吧！
+## 15-1 回溯算法
 
-共 6 节 (42分钟) 收起列表
+<img src="D:\Users\Documents\[note]前端笔记\前端算法与数据结构.assets\image-20210201141534760.png" alt="image-20210201141534760" style="zoom:50%;" />
 
--  15-1 回溯算法简介 (06:16)
--  15-2 LeetCode：46. 全排列 (12:23)
--  15-3 LeetCode：78. 子集 (11:46)
--  15-4 回溯算法-章节总结 (03:03)
--  15-5 回顾与总结 (07:54)
--  15-6 【勤于思考，夯实学习成果】阶段思考题
+<img src="D:\Users\Documents\[note]前端笔记\前端算法与数据结构.assets\image-20210201141547798.png" alt="image-20210201141547798" style="zoom:50%;" />
+
+**适合回溯算法解决的问题**
+
+* 全排列
+* 子集
+* ......
+
+![image-20210201141604495](D:\Users\Documents\[note]前端笔记\前端算法与数据结构.assets\image-20210201141604495.png)
+
+
+
+## 15-2 LeetCode：46. 全排列 
+
+<img src="D:\Users\Documents\[note]前端笔记\前端算法与数据结构.assets\image-20210201131754977.png" alt="image-20210201131754977" style="zoom:50%;" />
+
+<img src="D:\Users\Documents\[note]前端笔记\前端算法与数据结构.assets\image-20210201141624316.png" alt="image-20210201141624316" style="zoom: 33%;" />
+
+<img src="D:\Users\Documents\[note]前端笔记\前端算法与数据结构.assets\image-20210201141657537.png" alt="image-20210201141657537" style="zoom:33%;" />
+
+```js
+/**
+ * @param {number[]} nums
+ * @return {number[][]}
+ */
+var permute = function(nums) {
+    const res = [];
+    //递归模拟所有的情况
+    const backtrack = (path) =>{
+        //递归终点
+        if(path.length === nums.length){
+            res.push(path);
+            return;
+        }
+        nums.forEach(n=>{
+            //遇到包含重复元素的情况，就回溯
+            if(path.includes(n)) {return;}
+            backtrack(path.concat(n));
+        });
+    };
+    backtrack([]);
+    return res;
+};
+```
+
+时间：O（n！） n！=1x2x3x...x(n-1)xn
+
+空间：O（n）
+
+<img src="https://pic.leetcode-cn.com/0bf18f9b86a2542d1f6aa8db6cc45475fce5aa329a07ca02a9357c2ead81eec1-image.png" alt="image.png" style="zoom: 33%;" />
+
+## 15-3 LeetCode：78. 子集 
+
+<img src="D:\Users\Documents\[note]前端笔记\前端算法与数据结构.assets\image-20210201133037705.png" alt="image-20210201133037705" style="zoom:50%;" />
+
+<img src="D:\Users\Documents\[note]前端笔记\前端算法与数据结构.assets\image-20210201141643547.png" alt="image-20210201141643547" style="zoom:33%;" />
+
+<img src="D:\Users\Documents\[note]前端笔记\前端算法与数据结构.assets\image-20210201141730435.png" alt="image-20210201141730435" style="zoom:33%;" />
+
+```js
+/**
+ * @param {number[]} nums
+ * @return {number[][]}
+ */
+var subsets = function (nums) {
+    const res = [];
+    const backtrack = (path,l,start) => {
+        //递归终点的情况
+        if(path.length === l){
+            res.push(path);
+            return;
+        }
+        for(let i=start;i<nums.length;i++){
+            backtrack(path.concat(nums[i]),l,i+1);
+        }
+    }
+    for(let i=0;i<=nums.length;i++){
+        backtrack([],i,0);
+    }
+    return res;
+};
+```
+
+时间：O（2^N）2的n次方，因为每个元素都有两种可能（存在或不存在）
+
+空间：O(N)
+
+
+
+**附：我的做法：**
+
+考虑选取子集的方法，对于输入nums，每次进入res的数组都是递增的
+
+<img src="D:\Users\Documents\[note]前端笔记\前端算法与数据结构.assets\image-20210201135602792.png" alt="image-20210201135602792" style="zoom: 50%;" />
+
+```js
+/**
+ * @param {number[]} nums
+ * @return {number[][]}
+ */
+var subsets = function (nums) {
+    const res = [];
+    //递归模拟所有的情况
+    const backtrack = (path) => {
+        //将结果放入
+        res.push(path)
+        //遍历数组，保证子集path是递增的
+        nums.forEach(n => {
+            if (path.includes(n) || n <= path[path.length - 1]) { return; }
+            backtrack(path.concat(n));
+        })
+    }
+    backtrack([]);
+    return res;
+};
+```
