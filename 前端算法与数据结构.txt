@@ -2755,19 +2755,19 @@ const mySqrt = function(x) {
 
 ## 12-1 分而治之
 
-<img src="前端算法与数据结构.assets/image-20210119214412251.png" alt="image-20210119214412251" style="zoom:50%;" />
+![image-20210119214412251](前端算法与数据结构.assets/image-20210119214412251.png)
 
-<img src="前端算法与数据结构.assets/image-20210119215314445.png" alt="image-20210119215314445" style="zoom:50%;" />
+![image-20210119215314445](前端算法与数据结构.assets/image-20210119215314445.png)
 
-<img src="前端算法与数据结构.assets/image-20210119215400047.png" alt="image-20210119215400047" style="zoom:50%;" />
+![image-20210119215400047](前端算法与数据结构.assets/image-20210119215400047.png)
 
 ## 12-2 LeetCode：374. 猜数字大小 
 
-<img src="前端算法与数据结构.assets/image-20210119215704881.png" alt="image-20210119215704881" style="zoom:67%;" />
+![image-20210119215704881](前端算法与数据结构.assets/image-20210119215704881.png)
 
-<img src="前端算法与数据结构.assets/image-20210119215900918.png" alt="image-20210119215900918" style="zoom:50%;" />
+![image-20210119215900918](前端算法与数据结构.assets/image-20210119215900918.png)
 
-<img src="前端算法与数据结构.assets/image-20210119215914779.png" alt="image-20210119215914779" style="zoom:50%;" />
+![image-20210119215914779](前端算法与数据结构.assets/image-20210119215914779.png)
 
 ```js
 var guessNumber = function(n) {
@@ -2792,488 +2792,57 @@ var guessNumber = function(n) {
 
 ## 12-3 LeetCode：226. 翻转二叉树
 
-<img src="前端算法与数据结构.assets/image-20210119220505214.png" alt="image-20210119220505214" style="zoom: 67%;" />
+![image-20210119220505214](前端算法与数据结构.assets/image-20210119220505214.png)
 
-<img src="前端算法与数据结构.assets/image-20210119220719208.png" alt="image-20210119220719208" style="zoom: 50%;" />
+![image-20210119220719208](前端算法与数据结构.assets/image-20210119220719208.png)
 
-<img src="前端算法与数据结构.assets/image-20210119221042676.png" alt="image-20210119221042676" style="zoom:50%;" />
-
-```js
-/**
- * Definition for a binary tree node.
- * function TreeNode(val, left, right) {
- *     this.val = (val===undefined ? 0 : val)
- *     this.left = (left===undefined ? null : left)
- *     this.right = (right===undefined ? null : right)
- * }
- */
-/**
- * @param {TreeNode} root
- * @return {TreeNode}
- */
-var invertTree = function(root) {
-    //递归终点：叶子节点的左右节点为空
-    if(!root) return null;
-    //递归地反转左右子树
-    return {
-        val:root.val,
-        left:invertTree(root.right),
-        right:invertTree(root.left)
-    }
-};
-```
-
-时间复杂度：O（n）n是树的节点数量
-
-空间复杂度：O（h） h是树的高度
+![image-20210119221042676](前端算法与数据结构.assets/image-20210119221042676.png)
 
 ## 12-4 LeetCode：100. 相同的树
 
-<img src="D:\Users\Documents\[note]前端笔记\前端算法与数据结构.assets\image-20210129194135350.png" alt="image-20210129194135350" style="zoom:50%;" />
-
-<img src="D:\Users\Documents\[note]前端笔记\前端算法与数据结构.assets\image-20210129195604466.png" alt="image-20210129195604466" style="zoom: 33%;" />
-
-<img src="D:\Users\Documents\[note]前端笔记\前端算法与数据结构.assets\image-20210129195639173.png" alt="image-20210129195639173" style="zoom:33%;" />
-
-```js
-/**
- * Definition for a binary tree node.
- * function TreeNode(val, left, right) {
- *     this.val = (val===undefined ? 0 : val)
- *     this.left = (left===undefined ? null : left)
- *     this.right = (right===undefined ? null : right)
- * }
- */
-/**
- * @param {TreeNode} p
- * @param {TreeNode} q
- * @return {boolean}
- */
-var isSameTree = function(p, q) {
-    //如果两个树都为空，则相同
-    if(!p && !q) return true;
-    //判断根节点相同
-    if(p && q && p.val === q.val &&
-    isSameTree(p.left,q.left) &&
-    isSameTree(p.right,q.right)
-    ){
-        return true;
-    }
-    return false;
-};
-```
-
-是一个递归且遍历了树的所有节点
-
-时间：O(n) n是节点数
-
-空间：O(h)，最坏O（n） 最好（即树均匀分布）O（logn）
-
 ## 12-5 LeetCode：101. 对称二叉树 
 
-<img src="D:\Users\Documents\[note]前端笔记\前端算法与数据结构.assets\image-20210129194741070.png" alt="image-20210129194741070" style="zoom:50%;" />
 
-<img src="D:\Users\Documents\[note]前端笔记\前端算法与数据结构.assets\image-20210129195705113.png" alt="image-20210129195705113" style="zoom:33%;" />
 
-<img src="D:\Users\Documents\[note]前端笔记\前端算法与数据结构.assets\image-20210129195723123.png" alt="image-20210129195723123" style="zoom:33%;" />
+## 12-7 思考题
 
-```js
-/**
- * Definition for a binary tree node.
- * function TreeNode(val, left, right) {
- *     this.val = (val===undefined ? 0 : val)
- *     this.left = (left===undefined ? null : left)
- *     this.right = (right===undefined ? null : right)
- * }
- */
-/**
- * @param {TreeNode} root
- * @return {boolean}
- */
-var isSymmetric = function(root) {
-    //如果树为空，是镜像的
-    if(!root) return true;
-    //判断二叉树的左右子树是否是镜像的
-    const isMirror = (l,r) => {
-        //递归终点
-        if(!l && !r) return true;//两个空树是镜像的
-        if(l && r && l.val === r.val &&
-        isMirror(l.left,r.right) &&
-        isMirror(l.right,r.left)
-        ){
-            return true;
-        }
-        return false;
-    }
-    return isMirror(root.left,root.right);
-};
-```
+- # 第13章 动态规划 
 
-时间：O（n）
+  斐波那契数列问题、爬楼梯问题……无数经典问题都可以用动态规划来解！还在等什么，快来听老司机讲经~~
 
-空间 O（h） 树的高度，也就是堆栈的高度
+  共 5 节 (38分钟) 收起列表
 
-# 第13章 动态规划 
+  -  13-1 动态规划简介 (05:52)
+-  13-2 LeetCode：70. 爬楼梯 (12:49)
+  -  13-3 LeetCode：198. 打家劫舍 (16:40)
+  -  13-4 动态规划-章节总结 (01:46)
+  -  13-5 【勤于思考，夯实学习成果】阶段思考题
+  
+- 
 
-## 13-1 动态规划简介 
+  ##### 第14章 算法设计思想之“贪心算法”
 
-<img src="D:\Users\Documents\[note]前端笔记\前端算法与数据结构.assets\image-20210129201910984.png" alt="image-20210129201910984" style="zoom: 33%;" />
+  “贪婪”是人的本性，也是算法的精华。干嘛要想得很远？快来看看，贪心算法如何带你今朝有酒今朝醉！
 
-> **动态规划的步骤**
->
-> * **定义子问题**
-> * **反复执行**
+  共 5 节 (25分钟) 收起列表
 
-<img src="D:\Users\Documents\[note]前端笔记\前端算法与数据结构.assets\image-20210129201946630.png" alt="image-20210129201946630" style="zoom:33%;" />
+  -  14-1 贪心算法简介 (04:24)
+  -  14-2 LeetCode：455. 分饼干 (09:42)
+  -  14-3 LeetCode：122. 买卖股票的最佳时机 II (09:02)
+  -  14-4 贪心算法-章节总结 (01:19)
+  -  14-5 【勤于思考，夯实学习成果】阶段思考题
 
-<img src="D:\Users\Documents\[note]前端笔记\前端算法与数据结构.assets\image-20210129201929582.png" alt="image-20210129201929582" style="zoom:33%;" />
+- 
 
->  DP和分治区别：DP把问题分解为**相互重叠**的子问题，分治把问题分解为**相互独立**的子问题
+  ##### 第15章 算法设计思想之“回溯算法”
 
-## 13-2 LeetCode：70. 爬楼梯 
+  遇到岔路，先选择一条路走，走不通拐回来走另一条路，直到走通为止。所谓“拐回来”，就是回溯。听起来很高大上？不不不，很简单，来听听老司机怎样逐步剖析吧！
 
-<img src="D:\Users\Documents\[note]前端笔记\前端算法与数据结构.assets\image-20210129202034906.png" alt="image-20210129202034906" style="zoom:50%;" />
+  共 6 节 (42分钟) 收起列表
 
-<img src="D:\Users\Documents\[note]前端笔记\前端算法与数据结构.assets\image-20210129203310885.png" alt="image-20210129203310885" style="zoom:40%;" />
-
-<img src="D:\Users\Documents\[note]前端笔记\前端算法与数据结构.assets\image-20210129203329306.png" alt="image-20210129203329306" style="zoom:33%;" />
-
-```js
-/**
- * @param {number} n
- * @return {number}
- */
-var climbStairs = function(n) {
-    //特殊情况
-    if(n<2) { return 1};
-    //动态规划
-    const dp = [1,1];//dp数组用来记录第n阶有多少种方法
-    for(let i=2;i<=n;i++){
-        dp[i] = dp[i-1]+dp[i-2];
-    }
-    //console.log(dp)
-    return dp[n];
-};
-```
-
-时间：O（n）
-
-空间：开辟了一个数组存值，O（n）
-
-优化版本：没必要用数组记录动态规划的历史的值，我们可以使用两个值，这样就将空间复杂度降到O（1）常量级别
-
-```js
-/**
- * @param {number} n
- * @return {number}
- */
-var climbStairs = function(n) {
-    //特殊情况
-    if(n<2) { return 1};
-    //动态规划
-    //使用两个单独的变量 dp0 和 dp1
-    let dp0 = 1;
-    let dp1 = 1;
-    for(let i=2;i<=n;i++){
-        const temp = dp0;
-        dp0 = dp1;
-        dp1 = dp1 + temp;
-    }
-    return dp1;
-};
-```
-
-## 13-3 LeetCode：198. 打家劫舍 
-
-<img src="D:\Users\Documents\[note]前端笔记\前端算法与数据结构.assets\image-20210129203406572.png" alt="image-20210129203406572" style="zoom: 60%;" />
-
-<img src="D:\Users\Documents\[note]前端笔记\前端算法与数据结构.assets\image-20210129204925669.png" alt="image-20210129204925669" style="zoom:40%;" />
-
-<img src="D:\Users\Documents\[note]前端笔记\前端算法与数据结构.assets\image-20210129204940948.png" alt="image-20210129204940948" style="zoom:33%;" />
-
-```js
-/**
- * @param {number[]} nums
- * @return {number}
- */
-var rob = function(nums) {
-    //边界条件
-    if(nums.length === 0) { return 0; }
-    //动态规划
-    const dp = [0,nums[0]];//dp[n]表示过去n个房屋能打劫到的最大金额
-    for(let i=2;i<=nums.length;i++){
-        dp[i] = Math.max(dp[i-2]+nums[i-1],dp[i-1]);//注意这里nums的数组下标从0开始，nums[1]对应的是第2个房间
-    }
-    //console.log(dp);
-    return dp[dp.length-1];
-    //return dp[nums.length];
-};
-```
-
-时间：O（n）
-
-空间：O（n）
-
-优化版本：使用两个变量，记录DP过程中的前两个值
-
-时间 O（n） 空间O（1）
-
-```js
-/**
- * @param {number[]} nums
- * @return {number}
- */
-var rob = function(nums) {
-    //边界条件
-    if(nums.length === 0) { return 0; }
-    //动态规划
-    let dp0 = 0;
-    let dp1 = nums[0];
-    for(let i=2;i<=nums.length;i++){
-        const dp2 = Math.max(dp0+nums[i-1],dp1);
-        dp0 = dp1;
-        dp1 = dp2;
-    }
-    return dp1;
-};
-```
-
-## 13-4 思考题 —— 打家劫舍 II
-
-<img src="D:\Users\Documents\[note]前端笔记\前端算法与数据结构.assets\image-20210129205144470.png" alt="image-20210129205144470" style="zoom:50%;" />
-
-**我的思路**
-
-在原先DP的基础上对最后一个房间进行分情况处理
-
-* 打劫最后一个房间的情况下，则第一个房间不能打劫，
-* 不打劫最后一个房间的情况下
-
-```js
-/**
- * @param {number[]} nums
- * @return {number}
- */
-var rob = function(nums) {
-    //边界条件
-    if(nums.length === 0) { return 0; }
-    if(nums.length === 1) {return nums[0]}
-    //不打劫最后一个房间的情况下
-    const dp = [0,nums[0]];//dp[n]表示过去n个房屋能打劫到的最大金额
-    //打劫最后一个房间，则第一个房间不能打劫了
-    const dp2 = [0,0];
-    for(let i=2;i<nums.length;i++){
-        dp[i] = Math.max(dp[i-2]+nums[i-1],dp[i-1]);//注意这里nums的数组下标从0开始，nums[1]对应的是第2个房间
-        dp2[i] = Math.max(dp2[i-2]+nums[i-1],dp2[i-1]);
-    }
-    //最后一个房间分开处理
-    dp2[nums.length] = dp2[nums.length-2] + nums[nums.length-1];
-    // console.log("不打劫最后一个房间的情况下",dp[nums.length-1]);
-    // console.log("打劫最后一个房间的情况下",dp2[nums.length])
-    return Math.max(dp[nums.length-1],dp2[nums.length])
-    //return dp[nums.length];
-};
-```
-
-# 第14章 贪心算法
-
-## 14-1 贪心算法
-
-<img src="D:\Users\Documents\[note]前端笔记\前端算法与数据结构.assets\image-20210130220821183.png" alt="image-20210130220821183" style="zoom: 33%;" />
-
-贪心算法的负面例子：
-
-<img src="D:\Users\Documents\[note]前端笔记\前端算法与数据结构.assets\image-20210130220832311.png" alt="image-20210130220832311" style="zoom:33%;" />
-
-对6来说，3+3只需要2个币
-
-**【注意】：贪心算法不一定总能求得最优解**
-
-## 14-2 LeetCode：455. 分饼干 
-
-<img src="D:\Users\Documents\[note]前端笔记\前端算法与数据结构.assets\image-20210130215136840.png" alt="image-20210130215136840" style="zoom:60%;" />
-
-<img src="D:\Users\Documents\[note]前端笔记\前端算法与数据结构.assets\image-20210130220930687.png" alt="image-20210130220930687" style="zoom:33%;" />
-
-<img src="D:\Users\Documents\[note]前端笔记\前端算法与数据结构.assets\image-20210130220918227.png" alt="image-20210130220918227" style="zoom:33%;" />
-
-```js
-/**
- * @param {number[]} g
- * @param {number[]} s
- * @return {number}
- */
-var findContentChildren = function(g, s) {
-    const sortFunc = function(a,b){
-        return a-b;
-    }
-    //先排序
-    g.sort(sortFunc);
-    s.sort(sortFunc);
-    let i = 0;
-    //遍历饼干数组
-    s.forEach(n=>{
-        if(n>=g[i]){
-            i+=1;
-        }
-    });
-    return i;
-};
-```
-
-时间：O（nlogn）
-
-空间：O(1)
-
-## 14-3 LeetCode：122. 买卖股票的最佳时机 II 
-
-<img src="D:\Users\Documents\[note]前端笔记\前端算法与数据结构.assets\image-20210130215809813.png" alt="image-20210130215809813" style="zoom: 50%;" />
-
-<img src="D:\Users\Documents\[note]前端笔记\前端算法与数据结构.assets\image-20210130215835622.png" alt="image-20210130215835622" style="zoom:50%;" />
-
-<img src="D:\Users\Documents\[note]前端笔记\前端算法与数据结构.assets\image-20210130220947882.png" alt="image-20210130220947882" style="zoom:33%;" />
-
-<img src="D:\Users\Documents\[note]前端笔记\前端算法与数据结构.assets\image-20210130220901675.png" alt="image-20210130220901675" style="zoom:33%;" />
-
-```js
-/**
- * @param {number[]} prices
- * @return {number}
- */
-var maxProfit = function(prices) {
-    let profit = 0;
-    for(let i=1;i<prices.length;i++){
-        if(prices[i]>prices[i-1]){
-            profit += prices[i]-prices[i-1];
-        }
-    }
-    return profit;
-};
-```
-
-时间：O(n)
-
-空间 ：O（1）
-
-# 第15章 回溯算法
-
-## 15-1 回溯算法
-
-<img src="D:\Users\Documents\[note]前端笔记\前端算法与数据结构.assets\image-20210201141534760.png" alt="image-20210201141534760" style="zoom:50%;" />
-
-<img src="D:\Users\Documents\[note]前端笔记\前端算法与数据结构.assets\image-20210201141547798.png" alt="image-20210201141547798" style="zoom:50%;" />
-
-**适合回溯算法解决的问题**
-
-* 全排列
-* 子集
-* ......
-
-![image-20210201141604495](D:\Users\Documents\[note]前端笔记\前端算法与数据结构.assets\image-20210201141604495.png)
-
-
-
-## 15-2 LeetCode：46. 全排列 
-
-<img src="D:\Users\Documents\[note]前端笔记\前端算法与数据结构.assets\image-20210201131754977.png" alt="image-20210201131754977" style="zoom:50%;" />
-
-<img src="D:\Users\Documents\[note]前端笔记\前端算法与数据结构.assets\image-20210201141624316.png" alt="image-20210201141624316" style="zoom: 33%;" />
-
-<img src="D:\Users\Documents\[note]前端笔记\前端算法与数据结构.assets\image-20210201141657537.png" alt="image-20210201141657537" style="zoom:33%;" />
-
-```js
-/**
- * @param {number[]} nums
- * @return {number[][]}
- */
-var permute = function(nums) {
-    const res = [];
-    //递归模拟所有的情况
-    const backtrack = (path) =>{
-        //递归终点
-        if(path.length === nums.length){
-            res.push(path);
-            return;
-        }
-        nums.forEach(n=>{
-            //遇到包含重复元素的情况，就回溯
-            if(path.includes(n)) {return;}
-            backtrack(path.concat(n));
-        });
-    };
-    backtrack([]);
-    return res;
-};
-```
-
-时间：O（n！） n！=1x2x3x...x(n-1)xn
-
-空间：O（n）
-
-<img src="https://pic.leetcode-cn.com/0bf18f9b86a2542d1f6aa8db6cc45475fce5aa329a07ca02a9357c2ead81eec1-image.png" alt="image.png" style="zoom: 33%;" />
-
-## 15-3 LeetCode：78. 子集 
-
-<img src="D:\Users\Documents\[note]前端笔记\前端算法与数据结构.assets\image-20210201133037705.png" alt="image-20210201133037705" style="zoom:50%;" />
-
-<img src="D:\Users\Documents\[note]前端笔记\前端算法与数据结构.assets\image-20210201141643547.png" alt="image-20210201141643547" style="zoom:33%;" />
-
-<img src="D:\Users\Documents\[note]前端笔记\前端算法与数据结构.assets\image-20210201141730435.png" alt="image-20210201141730435" style="zoom:33%;" />
-
-```js
-/**
- * @param {number[]} nums
- * @return {number[][]}
- */
-var subsets = function (nums) {
-    const res = [];
-    const backtrack = (path,l,start) => {
-        //递归终点的情况
-        if(path.length === l){
-            res.push(path);
-            return;
-        }
-        for(let i=start;i<nums.length;i++){
-            backtrack(path.concat(nums[i]),l,i+1);
-        }
-    }
-    for(let i=0;i<=nums.length;i++){
-        backtrack([],i,0);
-    }
-    return res;
-};
-```
-
-时间：O（2^N）2的n次方，因为每个元素都有两种可能（存在或不存在）
-
-空间：O(N)
-
-
-
-**附：我的做法：**
-
-考虑选取子集的方法，对于输入nums，每次进入res的数组都是递增的
-
-<img src="D:\Users\Documents\[note]前端笔记\前端算法与数据结构.assets\image-20210201135602792.png" alt="image-20210201135602792" style="zoom: 50%;" />
-
-```js
-/**
- * @param {number[]} nums
- * @return {number[][]}
- */
-var subsets = function (nums) {
-    const res = [];
-    //递归模拟所有的情况
-    const backtrack = (path) => {
-        //将结果放入
-        res.push(path)
-        //遍历数组，保证子集path是递增的
-        nums.forEach(n => {
-            if (path.includes(n) || n <= path[path.length - 1]) { return; }
-            backtrack(path.concat(n));
-        })
-    }
-    backtrack([]);
-    return res;
-};
-```
+  -  15-1 回溯算法简介 (06:16)
+  -  15-2 LeetCode：46. 全排列 (12:23)
+  -  15-3 LeetCode：78. 子集 (11:46)
+  -  15-4 回溯算法-章节总结 (03:03)
+  -  15-5 回顾与总结 (07:54)
+  -  15-6 【勤于思考，夯实学习成果】阶段思考题

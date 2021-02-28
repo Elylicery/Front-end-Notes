@@ -38,7 +38,7 @@ console.log(pattern.exec(str));
 
 如何它忽略大小写?使用正则表达式的**模式修饰符**
 
-* i ignoreCase
+* i ：ignoreCase
 
   ```js
   var str = "I love Js";
@@ -72,8 +72,8 @@ console.log(pattern.exec(str));
 /[^a-zA-Z0-9_]/ = /\W/ 
 /[0-9]/ = /\d/
 /[^0-9]/ = /\D
-/[\n\r\f\t\v]=/\s/
-/[^\r\f\t\v]=/\S/
+/[\n\r\f\t\v]/=/\s/
+/[^\r\f\t\v]/=/\S/
 ```
 
 ## 重复
@@ -99,6 +99,11 @@ console.log(pattern.exec(str));//<td><p>a</p></td><td><p>b</p></td>'
 var pattern = /<td>.*?<\/td>/;
 console.log(pattern.exec(str));//<td><p>a</p></td>
 ```
+
+注意：
+
+* 表达式 `.*` 就是单个字符匹配任意次，即贪婪匹配
+* 表达式 `.*?` 是满足条件的情况只匹配一次，即最小匹配.
 
 ## 选择
 
@@ -170,6 +175,16 @@ var pattern = /<([a-zA-Z+])>(.*?)<\/\1>/;
 console.log(pattern.exec(str));//['<p><a>这是一段文字</a></p>','p','<a>这是一段文字</a>']
 ```
 
+备注：
+
+如果 exec() 找到了匹配的文本，则返回一个结果数组。否则，返回 null。此数组的第 0 个元素是与正则表达式相匹配的文本，第 1 个元素是与 RegExpObject 的第 1 个子表达式相匹配的文本（如果有的话），第 2 个元素是与 RegExpObject 的第 2 个子表达式相匹配的文本（如果有的话），以此类推。除了数组元素和 length 属性之外，exec() 方法还返回两个属性。index 属性声明的是匹配文本的第一个字符的位置，input属性是输入的字符串
+
+![image-20210201184202034](D:\Users\Documents\[note]前端笔记\JS正则表达式.assets\image-20210201184202034.png)
+
+* 所以``"<p><a>这是一段文字</ a></p>" `是与正则表达式匹配的文本
+* `"p" 是第一个分组，也就是([a-zA-Z+]) 匹配的文本`
+* ``"<a>这是一段文字</ a>" `是第二个分组，也就是(.*?)匹配的文本
+
 # 4 . 位置匹配
 
 ## 首尾匹配
@@ -240,7 +255,6 @@ console.log(pattern.test(str));//true
 var str = '@@js@@';
 var pattern = /\bjs\b/;
 console.log(pattern.test(str));//true
-
 ```
 
 应用：根据类名获取DOM节点
@@ -328,7 +342,7 @@ console.log(new RegExp('\\\\')); //   /\\/
 
 ### exec
 
-实例方法：exec总是匹配第一个
+**实例方法：exec总是匹配第一个**
 
 ```js
 //RegExp的实例方法
@@ -339,7 +353,7 @@ console.log(pattern.exec(str));//[ 'js', index: 0, input: 'js', groups: undefine
 
 **全局匹配**
 
-exec仍返回单个匹配结果，但是每次执行返回的索引不同
+**exec仍返回单个匹配结果，但是每次执行返回的索引不同**
 
 ```js
 //RegExp的实例方法
@@ -356,7 +370,9 @@ console.log(pattern.exec(str));//[ 'js', index: 0, input: 'js js js', groups: un
 
 非全局匹配是lastIndex是0；全局匹配时，lastIndex会变化，是匹配到的值的下一个位置。一旦找完，得到null，lastIndex又会重置为零
 
-应用：一个例子：找出全部js
+应用：
+
+例子1：找出字符串中的全部的js
 
 ```js
 var str = '1.js 2.js 3.js';
@@ -369,11 +385,25 @@ while((result=pattern.exec(str))!=null){
   match += "第"+total+"个匹配到的是:"+ result[0]+'，它的位置是:'+result.index+'\n';
 }
 match += '共找到' +total +"处匹配";
-console.log(match);
+//console.log(match);
 //第1个匹配到的是:js，它的位置是:2
 // 第2个匹配到的是:js，它的位置是:7
 // 第3个匹配到的是:js，它的位置是:12
 // 共找到3处匹配
+```
+
+例子2：计算html文档标签个数
+
+```js
+var html = "<div class='test'><b>Hello</b><i>World!</i></div>";
+var pattern = /<\/?(\w+)([^>]*)>/g;
+var result;
+var res = [];
+while((result = pattern.exec(html))!=null){
+    //console.log(result)
+    res.push(result);
+}
+console.log('共有',res.length,'个标签')
 ```
 
 ### test
@@ -386,8 +416,8 @@ var str = 'js js js';
 var pattern = new RegExp('js','g');
 console.log(pattern.test(str));//true
 console.log(pattern.test(str));//true
-console.log(pattern.test(str));//false
 console.log(pattern.test(str));//true
+console.log(pattern.test(str));//false
 ```
 
 ### 从Object继承来的方法
@@ -427,10 +457,8 @@ console.log(RegExp['$_']);//js js js
 console.log(RegExp.lastMatch);//js
 console.log(RegExp.leftContext);// ' '
 console.log(RegExp.rightContent);
-console.log(RegExp.$1);//j
+console.log(Regxp.$1);//j
 ```
-
-
 
 # 6. String中与正则相关的方法
 
@@ -449,10 +477,9 @@ console.log(str.search(pattern));//5 第五个位置找到了这个模式匹配�
 //search
 var str = 'html js js';
 console.log(str.search('js'));//也可以传入字符串，但仍是内部转化为正则进行匹配
-
 ```
 
-因为search只是为了找有没有这个字符，所有有没有全局匹配没关系
+因为search只是为了找有没有这个字符，所以没有全局匹配没关系
 
 ## match
 
@@ -615,6 +642,7 @@ str = str.replace(/\s*/g,'');
 总结一个工具函数
 
 ```js
+/*分割转驼峰*/
 var str = 'background-color';
 var pattern = /-([a-z])/gi;
 console.log(str.replace(pattern,function(all,letter){
@@ -627,6 +655,9 @@ function toCamelCase(str){
     return letter.toUpperCase();
   })
 }
+/*驼峰转分割*/
+"backColor".replace(/[A-Z]g/,'$1'.toLowerCase())
+//"backColor"
 ```
 
 ## 匹配HTML标签
@@ -683,13 +714,9 @@ console.log(strEx.match(patternCommon));//[ '<input type="text" value=">" name="
 
 <img src="JS正则表达式.assets/image-20201019175800106.png" alt="image-20201019175800106" style="zoom:67%;" />
 
-
-
 # 9 正则表达式刷题
 
 ## 9.1 字符替换
-
-
 
 ![image-20201216113845767](JS正则表达式.assets/image-20201216113845767.png)
 

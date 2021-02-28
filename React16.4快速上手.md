@@ -107,7 +107,7 @@ ReactDOM.render(<App />,document.getElementById('root'));
 
 TodoList.js
 
-```html
+```react
 import React, { Component } from 'react';
 
 //定义一个React组件
