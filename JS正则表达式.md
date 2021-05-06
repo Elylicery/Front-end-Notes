@@ -758,7 +758,21 @@ var res = reverseStr('the	sky	is												blue!');
 console.log(res);
 ```
 
+## 9.3 根据字符串中的数字排序
 
+给定一个句子,句子中的每个单词都包含一个数字,要求根据该数字大小对原句子重新排序
+
+```js
+function order(words) {
+  return words
+    .split(" ")
+    .sort((a, b) => a.replace(/[^\d]/g, "") - b.replace(/[^\d]/g, ""))
+    .join(" ");
+}
+
+console.log(order("4of Fo10r pe3ople g30ood th5e the2"));
+//the2 pe3ople 4of th5e Fo10r g30ood
+```
 
 
 

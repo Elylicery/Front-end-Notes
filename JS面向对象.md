@@ -274,6 +274,24 @@ for(var i in ren){
 
 <img src="JS面向对象.assets/image-20201008210442701.png" alt="image-20201008210442701" style="zoom:67%;" />
 
+**补充：如何遍历对象**
+
+```js
+  const data = {
+    username:'alex',
+    age:18
+  }
+  //username alex
+  //age 18
+  for(const [key,value] of Object.entries(data)){
+    console.log(key,value);
+  }
+
+  for(const key in data){
+    console.log(key,data[key]);
+  }
+```
+
 ## 4.2 对象的存储
 
 <img src="JS面向对象.assets/image-20201008212403214.png" alt="image-20201008212403214" style="zoom:67%;" />
